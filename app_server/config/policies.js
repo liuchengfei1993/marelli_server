@@ -11,12 +11,21 @@
 module.exports.policies = {
 
   /***************************************************************************
-  *                                                                          *
-  * Default policy for all controllers and actions, unless overridden.       *
-  * (`true` allows public access)                                            *
-  *                                                                          *
-  ***************************************************************************/
+   *                                                                          *
+   * Default policy for all controllers and actions, unless overridden.       *
+   * (`true` allows public access)                                            *
+   *                                                                          *
+   ***************************************************************************/
 
   // '*': true,
+  '*': 'noAuthSession',
+  UserController: {
+    logout: 'authSession',
+    login: 'noAuthSession',
+    register: 'noAuthSession',
+    changeLoginPwd: 'authSession',
+    resetLoginPwd: 'noAuthSession',
+    updateNickname: 'authSession',
+  },
 
 };
