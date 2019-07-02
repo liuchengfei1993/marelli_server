@@ -1,8 +1,0 @@
-{
-  "$id": "http://jccdex.cn/schemas/Hash256.json",
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Hash256",
-  "description": "The hex representation of a 256-bit hash",
-  "type": "string",
-  "pattern": "^[A-Fa-f0-9]{64}$"
-}

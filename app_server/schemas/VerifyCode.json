@@ -1,8 +1,0 @@
-{
-  "$id": "http://jccdex.cn/schemas/VerifyCode.json",
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "VerifyCode",
-  "description": "6位数字",
-  "type": "string",
-  "pattern": "^[0-9]{6}$"
-}

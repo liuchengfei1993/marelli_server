@@ -1,8 +1,0 @@
-{
-  "$id": "http://jccdex.cn/schemas/NickName.json",
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "NickName",
-  "description": "3-20位 中文、英文、数字但不包括下划线等符号",
-  "type": "string",
-  "pattern": "^[\u4E00-\u9FA5A-Za-z0-9]{3,20}$"
-}
