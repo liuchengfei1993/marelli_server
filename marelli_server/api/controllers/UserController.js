@@ -7,32 +7,61 @@
 
 module.exports = {
 
-
+  /**
+   * @description 注册
+   * @param {*} req 
+   * @param {*} res 
+   */
   register: async function(req, res) {
+    sails.log.debug(req.body)
     try {
       var userName = req.param('userName')
-      var password = req.body.password
-      var openId = req.body.openId
-      var verifyCode = req.body.verifyCode; //验证码
-      var verifyType = CONST.TIPS[0].type; //验证码类型
+      // var password = req.body.password
+      // var openId = req.body.openId
+      var employeesID = req.body.EmployeesID
+      var department = req.body.department
+      var IDCard = req.body.IDCard
+      var gender = req.body.gender
+      var phone = req.body.phone
+      // var verifyCode = req.body.verifyCode; //验证码
+      // var verifyType = CONST.TIPS[0].type; //验证码类型
       if (Utils.isNil(userName)) {
         sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
         return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
       }
-      if (Utils.isNil(password)) {
+      // if (Utils.isNil(password)) {
+      //   sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+      //   return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+      // }
+      // if (Utils.isNil(openId)) {
+      //   sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+      //   return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+      // }
+      if (Utils.isNil(employeesID)) {
         sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
         return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
       }
-      sails.log.debug(req.body.openId);
-      if (Utils.isNil(openId)) {
+      if (Utils.isNil(department)) {
+        sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+        return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+      }
+      if (Utils.isNil(IDCard)) {
+        sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+        return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+      }
+      if (Utils.isNil(gender)) {
+        sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+        return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+      }
+      if (Utils.isNil(phone)) {
         sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
         return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
       }
 
-      if (!validator.isValid('Password', password)) {
-        sails.log.debug(new Date().toISOString(), __filename + ":" + __line, userName, ResultCode.ERR_FORMAT_PASSWORD.msg);
-        return res.feedback(ResultCode.ERR_FORMAT_PASSWORD.code, {}, ResultCode.ERR_FORMAT_PASSWORD.msg);
-      }
+      // if (!validator.isValid('Password', password)) {
+      //   sails.log.debug(new Date().toISOString(), __filename + ":" + __line, userName, ResultCode.ERR_FORMAT_PASSWORD.msg);
+      //   return res.feedback(ResultCode.ERR_FORMAT_PASSWORD.code, {}, ResultCode.ERR_FORMAT_PASSWORD.msg);
+      // }
 
       //   //接收验证码手机或邮箱必须是填写手机或邮箱
       //   if (Utils.isNil(req.session.checkInfo) || !VerifyCodeUtil.compare(userName, req.session.checkInfo)) {
@@ -56,7 +85,7 @@ module.exports = {
         var findResult = await User.find({
           or: [
             { 'userName': userName },
-            { 'openId': openId }
+            // { 'openId': openId }
           ]
         }).decrypt();
       } catch (err) {
@@ -68,18 +97,22 @@ module.exports = {
         return res.feedback(ResultCode.ERR_USER_EXISTS.code, {}, ResultCode.ERR_USER_EXISTS.msg);
       }
 
-      var salt = Utils.getSalt()
-      var password = Utils.secretHash(password, salt, password);
+      // var salt = Utils.getSalt()
+      // var password = Utils.secretHash(password, salt, password);
       var createData = null
-      var number = Math.floor(Math.random() * nickName.name.length)
-      var randomNickNames = nickName.name[number];
+      // var number = Math.floor(Math.random() * nickName.name.length)
+      // var randomNickNames = nickName.name[number];
       try {
         createData = await User.create({
           userName: userName,
-          openId: openId,
-          password: password,
-          salt: salt,
-          nickName: randomNickNames
+          // openId: openId,
+          // password: password,
+          // salt: salt,
+          employeesID: employeesID,
+          department: department,
+          IDCard: IDCard,
+          gender: gender,
+          phone: phone
         }).fetch().decrypt()
       } catch (err) {
         sails.log.error(new Date().toISOString(), __filename + ":" + __line, err);
@@ -92,6 +125,11 @@ module.exports = {
     }
   },
 
+  /**
+   * @description 登陆
+   * @param {*} req 
+   * @param {*} res 
+   */
   login: async function(req, res) {
     try {
       var userName = req.param('userName');
@@ -393,4 +431,47 @@ module.exports = {
       return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
     }
   },
+
+  /**
+   * @description 获取困难员工信息
+   * @param {*} req 
+   * @param {*} res 
+   */
+  getDifficultEmp:async function(req,res){
+    try {
+      
+    } catch (error) {
+      sails.log.error(new Date().toISOString(), __filename + ":" + __line, err);
+      return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
+    }
+  },
+
+  /**
+   * @description 获取优秀员工信息
+   * @param {*} req 
+   * @param {*} res 
+   */
+  getExcellentEmp:async function(req,res){
+    try {
+      
+    } catch (error) {
+      sails.log.error(new Date().toISOString(), __filename + ":" + __line, err);
+      return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
+    }
+  },
+
+
+  /**
+   * @description 获取律师信息
+   * @param {*} req 
+   * @param {*} res 
+   */
+  getLawyerInfo:async function(req,res){
+    try {
+      
+    } catch (error) {
+      sails.log.error(new Date().toISOString(), __filename + ":" + __line, err);
+      return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
+    }
+  }
 };

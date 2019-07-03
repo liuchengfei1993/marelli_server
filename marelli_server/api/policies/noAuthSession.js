@@ -9,6 +9,7 @@
  */
 module.exports = function(req, res, next) {
 	try {
+    sails.log.debug(req.body)
 		var headers = req.headers;
 		if (!headers || headers.length === 0) {
 			return res.feedback(ResultCode.ERR_HEADER_PARAMETERS.code, {}, ResultCode.ERR_HEADER_PARAMETERS.msg);

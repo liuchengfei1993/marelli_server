@@ -22,7 +22,7 @@ module.exports.policies = {
   UserController: {
     logout: 'authSession',
     login: 'noAuthSession',
-    register: 'noAuthSession',
+    register: true,
     changeLoginPwd: 'authSession',
     resetLoginPwd: 'noAuthSession',
     updateNickname: 'authSession',

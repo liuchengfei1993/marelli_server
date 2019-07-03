@@ -21,12 +21,6 @@ module.exports.routes = {
 
   // '/': { view: 'pages/homepage' },
   'post /user/register/:userName': { controller: 'UserController', action: 'register' },
-  'post /user/login/:userName': { controller: 'UserController', action: 'login' },
-  'get /user/logout/:userName': { controller: 'UserController', action: 'logout' },
-  'post /user/changeLoginPwd/:userName': { controller: 'UserController', action: 'changeLoginPwd' },
-  'post /user/resetLoginPwd/:userName': { controller: 'UserController', action: 'resetLoginPwd' },
-  'post /user/getUserInfo/:userName': { controller: 'UserController', action: 'getUserInfo' },
-  'post /user/updateNickname/:userName': { controller: 'UserController', action: 'updateNickname' },
 
   /***************************************************************************
    *                                                                          *

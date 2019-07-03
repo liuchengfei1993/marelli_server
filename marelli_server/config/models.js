@@ -67,10 +67,11 @@ module.exports.models = {
      * > https://sailsjs.com/docs/concepts/orm/model-settings#?attributes       *
      *                                                                          *
      ***************************************************************************/
+     schema: false, //严格匹配数据表的模式
+    //  migrate: 'alter', //允许sails修改表的结构
 
     attributes: {
-        // // schema: false, //严格匹配数据表的模式
-        // migrate: 'alter', //允许sails修改表的结构
+       
 
         createdAt: { type: 'number', autoCreatedAt: true, },
         updatedAt: { type: 'number', autoUpdatedAt: true, },
