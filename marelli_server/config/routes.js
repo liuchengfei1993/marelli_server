@@ -20,7 +20,8 @@ module.exports.routes = {
    ***************************************************************************/
 
   // '/': { view: 'pages/homepage' },
-  'post /user/register/:userName': { controller: 'UserController', action: 'register' },
+  'post /marelli/user/register/:userName':   { controller: 'UserController', action: 'register' },
+  'get  /marelli/user/getEmpInfo/:userName': { controller: 'UserController', action: 'getEmpInfo' },
 
   /***************************************************************************
    *                                                                          *

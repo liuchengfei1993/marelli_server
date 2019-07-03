@@ -17,7 +17,7 @@ module.exports = {
     IDCard:       { type: 'string', maxLength: 18 }, // 身份证号码
     gender:       { type: 'string', }, // 性别
     phone:        { type: 'string', maxLength: 11 }, // 手机号
-    difficuleEmp: { type: 'boolean', defaultsTo: false }, //是否是困难员工
+    difficultEmp: { type: 'boolean', defaultsTo: false }, //是否是困难员工
     excellentEmp: { type: 'boolean', defaultsTo: false }, //是否是优秀员工
 
   },

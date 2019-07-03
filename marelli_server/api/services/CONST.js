@@ -9,10 +9,6 @@
  */
 
 module.exports = {
-    BASE_TOKEN: 'SWT',
-    PAY_TOKEN: 'EGP',
-
-    ACTIVE_WALLET: '钱包激活',
 
     MEMO_MAX_LENGTH: 512,
 
@@ -31,8 +27,15 @@ module.exports = {
     //验证码错误次数
     VERIFY_ERROR_TIMES: 5,
 
-    MSG_CODE_TAIL: '，若非本人操作，请忽略此信息。',
-    MSG_CODE_TITLE: '井畅',
+
+    DIFFICULTEMP:'困难员工',
+    EXCELLENTEMP:'优秀员工',
+
+     //分页信息
+     pagenation: {
+       skip: 10,
+       limit: 10,
+     },
 
     //验证码提示信息
     TIPS: [
