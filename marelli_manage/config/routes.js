@@ -20,6 +20,8 @@ module.exports.routes = {
   ***************************************************************************/
 
   '/': { view: 'pages/homepage' },
+  'post /marelli_manage/admin/login/:userName':      { controller: 'AdminController', action: 'login' },
+  'get  /marelli_manage/admin/getEmpInfo/:userName': { controller: 'AdminController', action: 'getEmpInfo' },
 
 
   /***************************************************************************
