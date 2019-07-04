@@ -20,8 +20,12 @@ module.exports.routes = {
    ***************************************************************************/
 
   // '/': { view: 'pages/homepage' },
-  'post /marelli/user/register/:userName':   { controller: 'UserController', action: 'register' },
-  'get  /marelli/user/getEmpInfo/:userName': { controller: 'UserController', action: 'getEmpInfo' },
+  'post /marelli/user/register/:userName':       { controller: 'UserController', action: 'register' },
+  'get  /marelli/user/getEmpInfo/:userName':     { controller: 'UserController', action: 'getEmpInfo' },
+  'get  /marelli/user/getLawyerInfo/:userName':  { controller: 'UserController', action: 'getLawyerInfo' },
+  'get  /marelli/user/getArticleInfo':           { controller: 'UserController', action: 'getArticleInfo' },
+
+
 
   /***************************************************************************
    *                                                                          *

@@ -475,6 +475,9 @@ module.exports = {
           return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
         }
       }
+      if (Utils.isNil(findResult)) {
+        return res.feedback(ResultCode.OK_TO_GET.code, findResult, ResultCode.OK_TO_GET.msg);
+      }
       findResult = findResult.slice((page - 1) * CONST.pagenation.skip, page * CONST.pagenation.limit);
       var resData = {
         findResult: findResult,
@@ -494,9 +497,75 @@ module.exports = {
    */
   getLawyerInfo:async function(req,res){
     try {
-      
+      var userName = req.param('userName');
+      var page = req.param('page');
+      if (Utils.isNil(userName)) {
+        sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+        return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+      }
+      if (Utils.isNil(page)) {
+        sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+        return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+      }
+      var findResult = null
+      try {
+        findResult = await Lawyer.find()
+      } catch (error) {
+        sails.log.error(new Date().toISOString(), __filename + ":" + __line, err);
+        return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
+      }
+      if(Utils.isNil(findResult[0])){
+        return res.feedback(ResultCode.OK_TO_GET.code, findResult, ResultCode.OK_TO_GET.msg);
+      }
+      findResult = findResult.slice((page - 1) * CONST.pagenation.skip, page * CONST.pagenation.limit);
+      var resData = {
+        findResult: findResult,
+        total: findResult.length
+      }
+      return res.feedback(ResultCode.OK_TO_GET.code, resData, ResultCode.OK_TO_GET.msg);
     } catch (error) {
-      sails.log.error(new Date().toISOString(), __filename + ":" + __line, err);
+      sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
+      return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
+    }
+  },
+
+  /**
+   * @description 获取通知公告，工作动态，福利等接口
+   * @param {*} req 
+   * @param {*} res 
+   */
+  getArticleInfo:async function(req,res){
+    try {
+      var page = req.param('page')
+      var type = req.param('type')
+      if (Utils.isNil(page)) {
+        sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+        return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+      }
+      if (Utils.isNil(type)) {
+        sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+        return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+      }
+      var findResult = null
+      try {
+        findResult = await Article.find({
+          type:type
+        })
+      } catch (error) {
+        sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
+        return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
+      }
+      if (Utils.isNil(findResult[0])) {
+        return res.feedback(ResultCode.OK_TO_GET.code, findResult, ResultCode.OK_TO_GET.msg);
+      }
+      findResult = findResult.slice((page - 1) * CONST.pagenation.skip, page * CONST.pagenation.limit);
+      var resData = {
+        findResult: findResult,
+        total: findResult.length
+      }
+      return res.feedback(ResultCode.OK_TO_GET.code, resData, ResultCode.OK_TO_GET.msg);
+    } catch (error) {
+      sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
       return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
     }
   }
