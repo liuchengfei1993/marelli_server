@@ -20,8 +20,11 @@ module.exports.routes = {
   ***************************************************************************/
 
   '/': { view: 'pages/homepage' },
-  'post /marelli_manage/admin/login/:userName':      { controller: 'AdminController', action: 'login' },
-  'get  /marelli_manage/admin/getEmpInfo/:userName': { controller: 'AdminController', action: 'getEmpInfo' },
+  'post /marelli_manage/admin/login/:userName':          { controller: 'AdminController', action: 'login' },
+  'get  /marelli_manage/admin/getEmpInfo/:userName':     { controller: 'AdminController', action: 'getEmpInfo' },
+  'get  /marelli_manage/admin/getArticle/:userName':     { controller: 'AdminController', action: 'getArticle' },
+  'post /marelli_manage/admin/publishArticle/:userName': { controller: 'AdminController', action: 'publishArticle' },
+  'post /marelli_manage/admin/uploadImage/:userName':    { controller: 'AdminController', action: 'uploadImage' },
 
 
   /***************************************************************************

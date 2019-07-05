@@ -48,16 +48,11 @@ module.exports = {
     OK_TO_LOGOUT:              { code: '0',   msg: '退出成功' },
     OK_USER_INFO:              { code: '0',   msg: '获取用户信息成功' },
     
+    OK_TO_PUBLIC:              {code:'0', msg:'发布成功'},
+    ERR_TO_PUBLIC:             {code:'9001',msg:'发布失败'},
+    OK_TO_AMEND:               {code: '0', msg:'修改成功'},
+    ERR_TO_AMEND:              {code: '9002', msg: '修改失败' },
+    OK_TO_DELETE:              {code: '0', msg: '删除成功' },
+    ERR_TO_DELETE:             {code: '9003', msg: '删除失败' },
 
-    WAR_NETWORK_CHANGE:        {code: '9001', msg: '检测到网络发生变化'},
-    ERR_FORMAT_TRADE_PWD:      {code: '9002', msg: '资产密码格式不正确'},
-    ERR_FORMAT_WALLET:         {code: '9003', msg: '钱包地址非法'},
-    ERR_MEMO_MAX_LENGTH:       {code: '9004', msg: '转账备注信息过长'},
-    ERR_FORMAT_AMOUNT:         {code: '9005', msg: '数量格式不正确'},
-    telINSUF_FUND:             {code: '9006', msg: '支付余额不足'},
-    tecNO_DST_INSUF_SWT:       {code: '9007', msg: '账号不存在'},
-    ERR_PAYMENT:               {code: '9008', msg: '转账失败,请重新再试'},
-    OK_CREATE_WALLET:          {code: '0',    msg: '成功创建钱包' },
-    ERR_MISS_WALLET:           {code: '9009', msg: '创建钱包失败' },
-    OK_PAYMENT:                {code: '0',    msg: '转账成功'},
 };
