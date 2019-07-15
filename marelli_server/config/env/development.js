@@ -390,5 +390,50 @@ module.exports = {
         // ```
         //--------------------------------------------------------------------------
 
-    },
+  },
+    
+    
+    sms: {
+        provider: 'QiRui',
+        qiRui: {
+          baseUrl: 'http://api.qirui.com:7891/mt',
+          apiKey: '501392490001',
+          apiSecret: 'D59BAEEF7E469B7240BE0EA9FAAA0DDB',
+          sign: '【威链】'
+        },
+        sQiRui: {
+          baseUrl: 'http://api.qirui.com:7891/mt',
+          apiKey: '1765820010',
+          apiSecret: '70e79cbb3c7bbe5274a0',
+          sign: '【威链】'
+        }
+      },
+
+      email: {
+        host: 'smtp.163.com',
+        port: 465,
+        secure: true,
+        ssl: true,
+        auth: {
+          //user: '',
+          //pass: ''
+          user: 'jcfintech@163.com',
+          pass: 'afd211404'
+        }
+      },
+
+      imgCode: {
+        enable: false
+      },
+      payServer: {
+        url: "http://localhost:1338"
+      },
+      pagenation: {
+        skip: 10,
+        limit: 10,
+      },
+      admin: {
+        phone: '18055191504',
+        msg: '连接wallet server异常，请尽快检查!'
+      }
 };

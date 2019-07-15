@@ -15,7 +15,7 @@ module.exports = {
   register: async function(req, res) {
     try {
       var userName = req.param('userName')
-      // var password = req.body.password
+      var password = req.body.password
       // var openId = req.body.openId
       var employeesID = req.body.employeesID
       var department = req.body.department
@@ -28,10 +28,10 @@ module.exports = {
         sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
         return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
       }
-      // if (Utils.isNil(password)) {
-      //   sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
-      //   return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
-      // }
+      if (Utils.isNil(password)) {
+        sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+        return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+      }
       // if (Utils.isNil(openId)) {
       //   sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
       //   return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
@@ -56,7 +56,6 @@ module.exports = {
         sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
         return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
       }
-
       // if (!validator.isValid('Password', password)) {
       //   sails.log.debug(new Date().toISOString(), __filename + ":" + __line, userName, ResultCode.ERR_FORMAT_PASSWORD.msg);
       //   return res.feedback(ResultCode.ERR_FORMAT_PASSWORD.code, {}, ResultCode.ERR_FORMAT_PASSWORD.msg);
@@ -96,8 +95,8 @@ module.exports = {
         return res.feedback(ResultCode.ERR_USER_EXISTS.code, {}, ResultCode.ERR_USER_EXISTS.msg);
       }
 
-      // var salt = Utils.getSalt()
-      // var password = Utils.secretHash(password, salt, password);
+      var salt = Utils.getSalt()
+      var password = Utils.secretHash(password, salt, password);
       var createData = null
       // var number = Math.floor(Math.random() * nickName.name.length)
       // var randomNickNames = nickName.name[number];
@@ -105,8 +104,8 @@ module.exports = {
         createData = await User.create({
           userName: userName,
           // openId: openId,
-          // password: password,
-          // salt: salt,
+          password: password,
+          salt: salt,
           employeesID: employeesID,
           department: department,
           IDCard: IDCard,
@@ -437,7 +436,7 @@ module.exports = {
    * @param {*} req 
    * @param {*} res 
    */
-  getEmpInfo:async function(req,res){
+  getEmpInfo: async function(req, res) {
     try {
       var userName = req.param('userName')
       var page = req.param('page')
@@ -455,17 +454,17 @@ module.exports = {
         return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
       }
       var findResult = null
-      if(empStatus === CONST.DIFFICULTEMP){
+      if (empStatus === CONST.DIFFICULTEMP) {
         try {
           findResult = await User.find({
-            difficultEmp:true
+            difficultEmp: true
           })
         } catch (error) {
           sails.log.error(new Date().toISOString(), __filename + ":" + __line, err);
           return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
         }
       }
-      if(empStatus === CONST.EXCELLENTEMP){
+      if (empStatus === CONST.EXCELLENTEMP) {
         try {
           findResult = await User.find({
             excellentEmp: true
@@ -495,7 +494,7 @@ module.exports = {
    * @param {*} req 
    * @param {*} res 
    */
-  getLawyerInfo:async function(req,res){
+  getLawyerInfo: async function(req, res) {
     try {
       var userName = req.param('userName');
       var page = req.param('page');
@@ -514,7 +513,7 @@ module.exports = {
         sails.log.error(new Date().toISOString(), __filename + ":" + __line, err);
         return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
       }
-      if(Utils.isNil(findResult[0])){
+      if (Utils.isNil(findResult[0])) {
         return res.feedback(ResultCode.OK_TO_GET.code, findResult, ResultCode.OK_TO_GET.msg);
       }
       findResult = findResult.slice((page - 1) * CONST.pagenation.skip, page * CONST.pagenation.limit);
@@ -534,7 +533,7 @@ module.exports = {
    * @param {*} req 
    * @param {*} res 
    */
-  getArticleInfo:async function(req,res){
+  getArticleInfo: async function(req, res) {
     try {
       var page = req.param('page')
       var type = req.param('type')
@@ -548,9 +547,7 @@ module.exports = {
       }
       var findResult = null
       try {
-        findResult = await Article.find({
-          type:type
-        })
+        findResult = await Article.find({ where: { type: type }, sort: [{ 'id': 'DESC' }] })
       } catch (error) {
         sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
         return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);

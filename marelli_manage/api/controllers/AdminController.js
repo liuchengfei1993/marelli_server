@@ -35,7 +35,6 @@ module.exports = {
         sails.log.error(new Date().toISOString(), __filename + ":" + __line, err);
         return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
       }
-      sails.log.debug(userData)
       if (Utils.isNil(userData)) {
         sails.log.info(new Date().toISOString(), __filename + ":" + __line, ResultCode.UNDEFINED_USER.msg);
         return res.feedback(ResultCode.UNDEFINED_USER.code, {}, ResultCode.UNDEFINED_USER.msg);
@@ -44,7 +43,11 @@ module.exports = {
         sails.log.info(new Date().toISOString(), __filename + ":" + __line, ResultCode.INCORRCT_USERNAME_PWD.msg)
         return res.feedback(ResultCode.INCORRCT_USERNAME_PWD.code, {}, ResultCode.INCORRCT_USERNAME_PWD.msg)
       }
-      return res.feedback(ResultCode.OK_TO_LOGIN.code, {}, ResultCode.OK_TO_LOGIN.msg)
+      req.session.userInfo = userData
+      var userName = {
+        userName: userData.userName
+      }
+      return res.feedback(ResultCode.OK_TO_LOGIN.code, userName, ResultCode.OK_TO_LOGIN.msg)
     } catch (error) {
       sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
       return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
@@ -94,10 +97,11 @@ module.exports = {
       if (Utils.isNil(findResult)) {
         return res.feedback(ResultCode.OK_TO_GET.code, findResult, ResultCode.OK_TO_GET.msg);
       }
+      var total = findResult.length
       findResult = findResult.slice((page - 1) * CONST.pagenation.skip, page * CONST.pagenation.limit);
       var resData = {
         findResult: findResult,
-        total: findResult.length
+        total: total
       }
       return res.feedback(ResultCode.OK_TO_GET.code, resData, ResultCode.OK_TO_GET.msg);
     } catch (error) {
@@ -114,7 +118,7 @@ module.exports = {
   getArticle: async function(req, res) {
     try {
       var page = req.param('page')
-      var type = req.param('type')
+      var type = Number(req.param('type'))
       if (Utils.isNil(page)) {
         sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
         return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
@@ -127,9 +131,7 @@ module.exports = {
       switch (type) {
         case CONST.ARTICLE.NOTICE:
           try {
-            findResult = await Article.find({
-              type: type
-            })
+            findResult = await Article.find({ where: { type: type, status: true }, sort: [{ 'id': 'DESC' }] })
           } catch (error) {
             sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
             return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
@@ -137,9 +139,7 @@ module.exports = {
           break;
         case CONST.ARTICLE.WORK_STATUS:
           try {
-            findResult = await Article.find({
-              type: type
-            })
+            findResult = await Article.find({ where: { type: type, status: true }, sort: [{ 'id': 'DESC' }] })
           } catch (error) {
             sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
             return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
@@ -147,9 +147,7 @@ module.exports = {
           break;
         case CONST.ARTICLE.WELFARE:
           try {
-            findResult = await Article.find({
-              type: type
-            })
+            findResult = await Article.find({ where: { type: type, status: true }, sort: [{ 'id': 'DESC' }] })
           } catch (error) {
             sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
             return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
@@ -157,9 +155,7 @@ module.exports = {
           break;
         case CONST.ARTICLE.COMPANY_PROFILE:
           try {
-            findResult = await Article.find({
-              type: type
-            })
+            findResult = await Article.find({ where: { type: type, status: true }, sort: [{ 'id': 'DESC' }] })
           } catch (error) {
             sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
             return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
@@ -169,10 +165,11 @@ module.exports = {
       if (Utils.isNil(findResult)) {
         return res.feedback(ResultCode.OK_TO_GET.code, findResult, ResultCode.OK_TO_GET.msg);
       }
+      var total = findResult.length
       findResult = findResult.slice((page - 1) * CONST.pagenation.skip, page * CONST.pagenation.limit);
       var resData = {
         findResult: findResult,
-        total: findResult.length
+        total: total
       }
       return res.feedback(ResultCode.OK_TO_GET.code, resData, ResultCode.OK_TO_GET.msg);
     } catch (error) {
@@ -194,6 +191,8 @@ module.exports = {
       var from = req.body.from
       var text = req.body.text
       var picture = req.session.picture || ''
+      var time = req.body.time
+      var id = req.body.id || '0'
       var findResult = null
       var data = {}
       type = Number(type)
@@ -205,6 +204,11 @@ module.exports = {
         sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
         return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
       }
+      if (Utils.isNil(time)) {
+        sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+        return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+      }
+      //如果类型是通知公告或者工作动态，则需要以下参数
       if (type === CONST.ARTICLE.NOTICE || type === CONST.ARTICLE.WORK_STATUS) {
         if (Utils.isNil(title)) {
           sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
@@ -227,9 +231,11 @@ module.exports = {
           to: to,
           from: from,
           text: text,
-          type: type
+          type: type,
+          time
         }
       }
+      //如果类型是公司简介
       if (type === CONST.ARTICLE.COMPANY_PROFILE) {
         title = CONST.UNION_INTRODUCTION
         data = {
@@ -237,10 +243,12 @@ module.exports = {
           to: '',
           from: '',
           text: text,
-          type: type
+          type: type,
+          time
         }
       }
       sails.log.debug(data)
+      //如果类型是福利
       if (type === CONST.ARTICLE.WELFARE) {
         if (Utils.isNil(picture)) {
           sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
@@ -252,17 +260,20 @@ module.exports = {
           from: from,
           text: text,
           picture: picture,
-          type: type
+          type: type,
+          time
         }
       }
+      //查看数据库是否有相同的标题或者相同的id的数据
       try {
         findResult = await Article.find({
-          title: title
+          or: [{ title: title }, { id: id }]
         })
       } catch (error) {
         sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
         return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
       }
+      //如果没有则创建新的数据
       if (Utils.isNil(findResult[0])) {
         try {
           await Article.create(data)
@@ -274,7 +285,7 @@ module.exports = {
       }
       if (!Utils.isNil(findResult[0])) {
         try {
-          await Article.update({ title: title }, data)
+          await Article.update({ id: id }, data)
         } catch (error) {
           sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
           return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
@@ -287,6 +298,30 @@ module.exports = {
     }
   },
 
+  /**
+   * @description 删除文章（并不是删掉数据库数据，而是让前端获取不到）
+   * @param {*} req 
+   * @param {*} res 
+   */
+  deleteArticle: async function(req, res) {
+    try {
+      var title = req.body.title;
+      if (Utils.isNil(title)) {
+        sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+        return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+      }
+      try {
+        await Article.update({ title: title }).set({ status: false })
+      } catch (error) {
+        sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
+        return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
+      }
+      return res.feedback(ResultCode.OK_TO_DELETE.code, {}, ResultCode.OK_TO_DELETE.msg)
+    } catch (error) {
+      sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
+      return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
+    }
+  },
   /**
    * @description:文件上传接口
    * @param {*} req 
@@ -357,7 +392,7 @@ module.exports = {
           return res.feedback(ResultCode.ERR_TO_UPLOAD.code, {}, ResultCode.ERR_TO_UPLOAD.msg);
         }
         //判断文件类型是否是jpg和png
-          for (var i in uploadedFiles) {
+        for (var i in uploadedFiles) {
           if (!(uploadedFiles[i].type === 'image/jpeg' || 'image/jpg' || 'image/png')) {
             sails.log.error(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_TYPE_OF_FILE.msg);
             return res.feedback(ResultCode.ERR_TYPE_OF_FILE.code, uploadedFiles[i].type, ResultCode.ERR_TYPE_OF_FILE.msg);

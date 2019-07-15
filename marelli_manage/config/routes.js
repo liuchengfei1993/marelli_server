@@ -25,6 +25,7 @@ module.exports.routes = {
   'get  /marelli_manage/admin/getArticle/:userName':     { controller: 'AdminController', action: 'getArticle' },
   'post /marelli_manage/admin/publishArticle/:userName': { controller: 'AdminController', action: 'publishArticle' },
   'post /marelli_manage/admin/uploadImage/:userName':    { controller: 'AdminController', action: 'uploadImage' },
+  'post /marelli_manage/admin/deleteArticle/:userName':  { controller: 'AdminController', action: 'deleteArticle' },
 
 
   /***************************************************************************
