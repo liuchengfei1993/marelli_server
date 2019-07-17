@@ -1,4 +1,4 @@
-FROM registry.cn-hangzhou.aliyuncs.com/personal_git/marelli_server
+FROM registry.cn-qingdao.aliyuncs.com/egp/egp_sails:latest
 
 WORKDIR /app
 COPY manage_server /app
