@@ -82,7 +82,7 @@ module.exports = {
       try {
         var findResult = await User.find({
           or: [
-            { 'userName': userName },
+            { 'employeesID': employeesID },
             // { 'openId': openId }
           ]
         }).decrypt();
@@ -117,6 +117,10 @@ module.exports = {
       }
       req.session.user = createData
       sails.log.debug(createData)
+      delete createData.password
+      delete createData.salt
+      delete createData.createdAt
+      delete createData.updatedAt
       return res.feedback(ResultCode.OK_REGISTERED.code, createData, ResultCode.OK_REGISTERED.msg)
     } catch (err) {
       sails.log.error(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_SYSTEM_DB.msg, err);
@@ -131,10 +135,10 @@ module.exports = {
    */
   login: async function(req, res) {
     try {
-      var userName = req.param('userName');
+      var employeesID = req.param('employeesID');
       var password = req.body.password;
       var userData = null;
-      if (Utils.isNil(userName)) {
+      if (Utils.isNil(employeesID)) {
         sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
         return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
       }
@@ -145,7 +149,7 @@ module.exports = {
       try {
         // var userData = await User.find({ userName: userName } || { phone: userName } || { email: userName }).decrypt()
         userData = await User.find({
-          'userName': userName
+          'employeesID': employeesID
         }).decrypt();
         userData = userData[0];
       } catch (err) {

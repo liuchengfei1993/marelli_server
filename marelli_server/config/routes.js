@@ -21,6 +21,7 @@ module.exports.routes = {
 
   // '/': { view: 'pages/homepage' },
   'post /marelli/user/register/:userName':       { controller: 'UserController', action: 'register' },
+  'post /marelli/user/login/:employeesID':       { controller: 'UserController', action: 'login' },
   'get  /marelli/user/getEmpInfo/:userName':     { controller: 'UserController', action: 'getEmpInfo' },
   'get  /marelli/user/getLawyerInfo/:userName':  { controller: 'UserController', action: 'getLawyerInfo' },
   'get  /marelli/user/getArticleInfo':           { controller: 'UserController', action: 'getArticleInfo' },
