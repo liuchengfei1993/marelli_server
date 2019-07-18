@@ -3,11 +3,11 @@ FROM node:8-alpine
 # 设置镜像作者
 MAINTAINER liuchengfei 
 # 创建目录
-RUN mkdir -p  /marelli_server
+RUN mkdir -p  /node_sails
 # 安装npm模块
 # ADD package.json /app/csp/package.json
 # 安装npm模块
-WORKDIR /marelli_server
+WORKDIR /node_sails
 # 使用淘宝的npm镜像
 RUN npm install --production -d --registry=http://registry.npm.taobao.org
 # 再装pm2
