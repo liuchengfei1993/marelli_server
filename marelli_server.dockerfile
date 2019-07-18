@@ -10,5 +10,5 @@ COPY marelli_server /app
 ENV NODE_ENV development
 # 用环境变量启动
 # CMD /bin/sh ./docker_start.sh $NODE_ENV
-RUN npm cache clean -f && npm install > /dev/null 2>&1
+RUN npm install > /dev/null 2>&1
 CMD ["sails", "lift"]
