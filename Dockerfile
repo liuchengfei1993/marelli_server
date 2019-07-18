@@ -10,8 +10,8 @@ RUN mkdir -p  /node_sails
 WORKDIR /node_sails
 # 使用淘宝的npm镜像
 RUN npm install --production -d --registry=http://registry.npm.taobao.org
-# 再装pm2
-# RUN npm install -g pm2 --registry=https://registry.npm.taobao.org
+再装pm2
+RUN npm install -g pm2 --registry=https://registry.npm.taobao.org
 # 安装sails
 RUN npm install sails -g
 # 添加源代码
@@ -22,4 +22,4 @@ RUN npm install sails -g
 # 用环境变量启动
 # CMD /bin/sh ./docker_start.sh $NODE_ENV
 # RUN npm cache clean -f && npm install > /dev/null 2>&1
-CMD ["npm", "-v"]
+CMD ["npm", "start"]
