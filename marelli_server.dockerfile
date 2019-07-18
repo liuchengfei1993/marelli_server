@@ -7,8 +7,8 @@ RUN mkdir -p  /app
 WORKDIR /app
 COPY marelli_server /app
 # 设置环境变量
-ENV NODE_ENV development
+# ENV NODE_ENV development
 # 用环境变量启动
 # CMD /bin/sh ./docker_start.sh $NODE_ENV
-RUN npm install > /dev/null 2>&1
+RUN npm install 
 CMD ["sails", "lift"]
