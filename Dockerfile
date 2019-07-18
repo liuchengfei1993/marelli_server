@@ -10,7 +10,7 @@ RUN mkdir -p  /node_sails
 WORKDIR /node_sails
 # 使用淘宝的npm镜像
 RUN npm install --production -d --registry=http://registry.npm.taobao.org
-再装pm2
+# 再装pm2
 RUN npm install -g pm2 --registry=https://registry.npm.taobao.org
 # 安装sails
 RUN npm install sails -g
