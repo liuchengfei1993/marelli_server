@@ -15,7 +15,7 @@ WORKDIR /app
 # 安装sails
 # RUN npm install sails -g
 # 添加源代码
-COPY marelli_server /marelli_server
+COPY marelli_server /app
 # COPY marelli_manage /app
 # 设置环境变量
 # ENV NODE_ENV development
