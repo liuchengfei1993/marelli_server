@@ -1,4 +1,4 @@
-FROM registry.cn-hangzhou.aliyuncs.com/personal_git/base_image
+FROM registry.cn-hangzhou.aliyuncs.com/personal_git/base_image:1.0.0
 
 # 设置镜像作者
 MAINTAINER liuchengfei 
