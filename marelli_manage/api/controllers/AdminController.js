@@ -444,15 +444,20 @@ module.exports = {
    */
   updateUserData: async function(req, res) {
     try {
-      let id = req.param("id"); // id
+      // let id = req.param("id"); // id
       let data = req.body;
       // let employeesID = data.employeesID; // 员工编号
       // let department = data.department; // 部门
       // let IDCard = data.IDCard; // 身份证号码
       // let gender = data.gender; // 性别
       // let phone = data.phone; // 手机号
+      let id = data.id; // id
       let difficultEmp = data.difficultEmp; //是否是困难员工
       let excellentEmp = data.excellentEmp; //是否是优秀员工
+      if (Utils.isNil(id)) {
+        sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+        return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+      }
       if (Utils.isNil(difficultEmp)) {
         sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
         return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
