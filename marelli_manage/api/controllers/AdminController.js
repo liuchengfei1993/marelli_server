@@ -435,5 +435,35 @@ module.exports = {
       sails.log.error(new Date().toISOString(), __filename + ":" + __line, err);
       return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
     }
+  },
+
+  /**
+   * @description:修改员工信息接口
+   * @param {*} req 
+   * @param {*} res 
+   */
+  updateUserData: async function(req, res) {
+    try {
+      let id = req.param("id"); // id
+      let data = req.body;
+      // let employeesID = data.employeesID; // 员工编号
+      // let department = data.department; // 部门
+      // let IDCard = data.IDCard; // 身份证号码
+      // let gender = data.gender; // 性别
+      // let phone = data.phone; // 手机号
+      let difficultEmp = data.difficultEmp; //是否是困难员工
+      let excellentEmp = data.excellentEmp; //是否是优秀员工
+
+      try {
+        await User.update({ id: id }).set({ difficultEmp: difficultEmp, excellentEmp: excellentEmp })
+      } catch (error) {
+        sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
+        return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
+      }
+      return res.feedback(ResultCode.OK_TO_AMEND.code, {}, ResultCode.OK_TO_AMEND.msg)
+    } catch (err) {
+      sails.log.error(new Date().toISOString(), __filename + ":" + __line, err);
+      return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
+    }
   }
 };
