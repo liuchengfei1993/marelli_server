@@ -42,7 +42,7 @@ module.exports.session = {
 
   adapter: 'redis',
 
-  host: '172.17.0.2',
+  host: 'localhost',
   port: 6379,
   db: 2,
 

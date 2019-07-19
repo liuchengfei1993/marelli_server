@@ -461,7 +461,6 @@ module.exports = {
         sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
         return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
       }
-
       try {
         await User.update({ id: id }).set({ difficultEmp: difficultEmp, excellentEmp: excellentEmp })
       } catch (error) {
