@@ -453,6 +453,14 @@ module.exports = {
       // let phone = data.phone; // 手机号
       let difficultEmp = data.difficultEmp; //是否是困难员工
       let excellentEmp = data.excellentEmp; //是否是优秀员工
+      if (Utils.isNil(difficultEmp)) {
+        sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+        return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+      }
+      if (Utils.isNil(excellentEmp)) {
+        sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+        return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+      }
 
       try {
         await User.update({ id: id }).set({ difficultEmp: difficultEmp, excellentEmp: excellentEmp })
