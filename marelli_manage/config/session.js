@@ -36,4 +36,21 @@ module.exports.session = {
   //   return !!req.path.match(req._sails.LOOKS_LIKE_ASSET_RX);
   // },
 
+  cookie: {
+    maxAge: 24 * 60 * 60 //有效期一天
+  },
+
+  adapter: 'redis',
+
+  host: '172.17.0.2',
+  port: 6379,
+  db: 2,
+
+  isSessionDisabled: function(req) {
+    if (req.path.match(/^\/official\//)) {
+      return false;
+    }
+    // Otherwise, disable session for all requests that look like assets.
+    return !!req.path.match(req._sails.LOOKS_LIKE_ASSET_RX);
+  }
 };
