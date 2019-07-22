@@ -18,5 +18,13 @@ module.exports.policies = {
   ***************************************************************************/
 
   // '*': true,
-
+  AdminController: {
+    login: 'noAuthSession',
+    getEmpInfo: 'authSession',
+    getArticle: 'authSession',
+    publishArticle: 'authSession',
+    uploadImage: 'authSession',
+    deleteArticle: 'authSession',
+    updateUserData: 'authSession',
+  },
 };

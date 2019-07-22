@@ -14,10 +14,10 @@ module.exports = function (req, res, next) {
 			return res.feedback(ResultCode.ERR_HEADER_PARAMETERS.code, {}, ResultCode.ERR_HEADER_PARAMETERS.msg);
 		}
 		// var channel = headers['channel'];
-		// if (Utils.isNil(channel) || !Utils.isValidChannel(channel)) {
-		// 	//判断channel是否正常
-		// 	return res.feedback(ResultCode.ERR_INVALID_CHANNEL.code, {}, ResultCode.ERR_INVALID_CHANNEL.msg);
-		// }
+		// // if (Utils.isNil(channel) || !Utils.isValidChannel(channel)) {
+		// // 	//判断channel是否正常
+		// // 	return res.feedback(ResultCode.ERR_INVALID_CHANNEL.code, {}, ResultCode.ERR_INVALID_CHANNEL.msg);
+		// // }
 		// if(Utils.isNil(req.session.channel)) {
 		// 	req.session.channel = channel;
 		// } 
@@ -51,8 +51,8 @@ module.exports = function (req, res, next) {
 			return res.feedback(ResultCode.ERR_NOT_LOGIN.code, {}, ResultCode.ERR_NOT_LOGIN.msg);
 		}
 		//判断访问的path和session是否一致
-		var employeesID = req.param('employeesID');
-		if (req.session.user.employeesID !== employeesID) {
+		var userName = req.param('userName');
+		if (req.session.user.userName !== userName) {
 			return res.feedback(ResultCode.ERR_NOT_LOGIN.code, {}, ResultCode.ERR_NOT_LOGIN.msg);
 		}
 		return next();

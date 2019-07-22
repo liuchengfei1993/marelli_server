@@ -20,11 +20,11 @@ module.exports.routes = {
    ***************************************************************************/
 
   // '/': { view: 'pages/homepage' },
-  'post /marelli/user/register/:userName':       { controller: 'UserController', action: 'register' },
-  'post /marelli/user/login/:employeesID':       { controller: 'UserController', action: 'login' },
-  'get  /marelli/user/getEmpInfo/:userName':     { controller: 'UserController', action: 'getEmpInfo' },
-  'get  /marelli/user/getLawyerInfo/:userName':  { controller: 'UserController', action: 'getLawyerInfo' },
-  'get  /marelli/user/getArticleInfo':           { controller: 'UserController', action: 'getArticleInfo' },
+  'post /marelli/user/register/:employeesID':         { controller: 'UserController', action: 'register' },
+  'post /marelli/user/login/:employeesID':            { controller: 'UserController', action: 'login' },
+  'get  /marelli/user/getEmpInfo/:employeesID':       { controller: 'UserController', action: 'getEmpInfo' },
+  'get  /marelli/user/getLawyerInfo/:employeesID':    { controller: 'UserController', action: 'getLawyerInfo' },
+  'get  /marelli/user/getArticleInfo/:employeesID':   { controller: 'UserController', action: 'getArticleInfo' },
 
 
 

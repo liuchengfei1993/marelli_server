@@ -43,7 +43,7 @@ module.exports = {
         sails.log.info(new Date().toISOString(), __filename + ":" + __line, ResultCode.INCORRCT_USERNAME_PWD.msg)
         return res.feedback(ResultCode.INCORRCT_USERNAME_PWD.code, {}, ResultCode.INCORRCT_USERNAME_PWD.msg)
       }
-      req.session.userInfo = userData
+      req.session.user = userData
       var userName = {
         userName: userData.userName
       }
