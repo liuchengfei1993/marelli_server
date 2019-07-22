@@ -27,7 +27,7 @@ module.exports.policies = {
     resetLoginPwd: 'noAuthSession',
     getEmpInfo: 'authSession',
     getLawyerInfo: 'authSession',
-    getArticleInfo: 'authSession',
+    getArticleInfo: 'noAuthSession',
   },
 
 };

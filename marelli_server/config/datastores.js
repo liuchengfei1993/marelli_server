@@ -51,7 +51,7 @@ module.exports.datastores = {
 
 
     adapter: 'sails-mysql',
-    url: 'mysql://root:whafd1212@sh-cdb-ffe2zdqk.sql.tencentcdb.com:61909/marelli_server',
+    url: 'mysql://marelli_database:Marelli666@rm-bp10z48jsu5p3qf2mco.mysql.rds.aliyuncs.com:3306/marelli_server',
     // url: 'mysql://root:root@localhost:3306/marelli_server'
 
   },
