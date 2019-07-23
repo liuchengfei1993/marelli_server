@@ -4,7 +4,6 @@
  * @description :: Server-side actions for handling incoming requests.
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
-
 module.exports = {
 
   /**
@@ -427,7 +426,6 @@ module.exports = {
       }
       req.session.user = userData;
       var ret = Utils.clearPrivateInfo(req.session.user);
-
       return res.feedback(ResultCode.OK_SET.code, ret, ResultCode.OK_SET.msg);
     } catch (err) {
       sails.log.error(new Date().toISOString(), __filename + ":" + __line, err);
@@ -481,9 +479,9 @@ module.exports = {
       if (Utils.isNil(findResult)) {
         return res.feedback(ResultCode.OK_TO_GET.code, findResult, ResultCode.OK_TO_GET.msg);
       }
-      findResult = findResult.slice((page - 1) * CONST.pagenation.skip, page * CONST.pagenation.limit);
+      res = findResult.slice((page - 1) * CONST.pagenation.skip, page * CONST.pagenation.limit);
       var resData = {
-        findResult: findResult,
+        findResult: res,
         total: findResult.length
       }
       return res.feedback(ResultCode.OK_TO_GET.code, resData, ResultCode.OK_TO_GET.msg);
@@ -520,9 +518,9 @@ module.exports = {
       if (Utils.isNil(findResult[0])) {
         return res.feedback(ResultCode.OK_TO_GET.code, findResult, ResultCode.OK_TO_GET.msg);
       }
-      findResult = findResult.slice((page - 1) * CONST.pagenation.skip, page * CONST.pagenation.limit);
+      res = findResult.slice((page - 1) * CONST.pagenation.skip, page * CONST.pagenation.limit);
       var resData = {
-        findResult: findResult,
+        findResult: res,
         total: findResult.length
       }
       return res.feedback(ResultCode.OK_TO_GET.code, resData, ResultCode.OK_TO_GET.msg);
@@ -569,5 +567,11 @@ module.exports = {
       sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
       return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
     }
+  },
+
+
+  sendSms: async function(req, res) {
+    sails.log.debug(req.body.phone)
+
   }
 };

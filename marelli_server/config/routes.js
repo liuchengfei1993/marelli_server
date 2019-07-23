@@ -20,11 +20,17 @@ module.exports.routes = {
    ***************************************************************************/
 
   // '/': { view: 'pages/homepage' },
-  'post /marelli/user/register/:employeesID':         { controller: 'UserController', action: 'register' },
-  'post /marelli/user/login/:employeesID':            { controller: 'UserController', action: 'login' },
-  'get  /marelli/user/getEmpInfo/:employeesID':       { controller: 'UserController', action: 'getEmpInfo' },
-  'get  /marelli/user/getLawyerInfo/:employeesID':    { controller: 'UserController', action: 'getLawyerInfo' },
-  'get  /marelli/user/getArticleInfo/:employeesID':   { controller: 'UserController', action: 'getArticleInfo' },
+  'post /marelli/user/register/:employeesID': { controller: 'UserController', action: 'register' },
+  'post /marelli/user/login/:employeesID': { controller: 'UserController', action: 'login' },
+  'get  /marelli/user/getEmpInfo/:employeesID': { controller: 'UserController', action: 'getEmpInfo' },
+  'get  /marelli/user/getLawyerInfo/:employeesID': { controller: 'UserController', action: 'getLawyerInfo' },
+  'get  /marelli/user/getArticleInfo': { controller: 'UserController', action: 'getArticleInfo' },
+  'get /marelli/verify/verifyCode': { controller: 'VerifyController', action: 'verifyCode' },
+  'get /marelli/verify/checkVerifyCode': { controller: 'VerifyController', action: 'checkVerifyCode' },
+  'get /marelli/verify/imgCode': { controller: 'VerifyController', action: 'imgCode' },
+  'get /marelli/verify/checkImgCode': { controller: 'VerifyController', action: 'checkImgCode' },
+
+
 
 
 

@@ -5,6 +5,7 @@
     "description": "a Sails application",
     "keywords": [],
     "dependencies": {
+        "@alicloud/pop-core": "^1.7.7",
         "@sailshq/connect-redis": "^3.2.1",
         "@sailshq/lodash": "^3.10.3",
         "@sailshq/socket.io-redis": "^5.2.0",
@@ -37,6 +38,7 @@
         "sjcl": "^1.0.8",
         "superagent": "^5.0.2",
         "supertest": "^4.0.2",
+        "svg-captcha": "^1.4.0",
         "uuid": "^3.3.2",
         "validator": "^10.11.0"
     },
