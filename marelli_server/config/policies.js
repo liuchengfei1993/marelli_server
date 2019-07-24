@@ -22,12 +22,21 @@ module.exports.policies = {
   UserController: {
     logout: 'authSession',
     login: 'noAuthSession',
-    register: true,
+    register: 'noAuthSession',
     changeLoginPwd: 'authSession',
     resetLoginPwd: 'noAuthSession',
     getEmpInfo: 'authSession',
     getLawyerInfo: 'authSession',
     getArticleInfo: 'noAuthSession',
+    changeLoginPwd: 'authSession',
+    resetLoginPwd: 'noAuthSession',
   },
+
+  VerifyController: {
+    verifyCode: 'noAuthSession',
+    checkVerifyCode: 'noAuthSession',
+    imgCode: 'noAuthSession',
+    checkImgCode: 'noAuthSession',
+  }
 
 };

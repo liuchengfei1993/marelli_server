@@ -29,6 +29,9 @@ module.exports.routes = {
   'get /marelli/verify/checkVerifyCode': { controller: 'VerifyController', action: 'checkVerifyCode' },
   'get /marelli/verify/imgCode': { controller: 'VerifyController', action: 'imgCode' },
   'get /marelli/verify/checkImgCode': { controller: 'VerifyController', action: 'checkImgCode' },
+  'post /marelli/user/changeLoginPwd/:employeesID': { controller: 'UserController', action: 'changeLoginPwd' },
+  'post /marelli/user/resetLoginPwd/:employeesID': { controller: 'UserController', action: 'resetLoginPwd' },
+
 
 
 

@@ -21,7 +21,7 @@ module.exports = {
       var IDCard = req.body.IDCard
       var gender = req.body.gender
       var phone = req.body.phone
-      // var verifyCode = req.body.verifyCode; //验证码
+      var verifyCode = req.body.verifyCode; //验证码
       // var verifyType = CONST.TIPS[0].type; //验证码类型
       if (Utils.isNil(userName)) {
         sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
@@ -60,22 +60,22 @@ module.exports = {
       //   return res.feedback(ResultCode.ERR_FORMAT_PASSWORD.code, {}, ResultCode.ERR_FORMAT_PASSWORD.msg);
       // }
 
-      //   //接收验证码手机或邮箱必须是填写手机或邮箱
-      //   if (Utils.isNil(req.session.checkInfo) || !VerifyCodeUtil.compare(userName, req.session.checkInfo)) {
-      //     sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_PHONE_OR_EMAIL_DIFF.msg);
-      //     return res.feedback(ResultCode.ERR_PHONE_OR_EMAIL_DIFF.code, { 'info1': req.session.checkInfo, 'uname': userName }, ResultCode.ERR_PHONE_OR_EMAIL_DIFF.msg);
-      //   }
+      //接收验证码手机或邮箱必须是填写手机或邮箱
+      if (Utils.isNil(req.session.checkInfo) || !VerifyCodeUtil.compare(userName, req.session.checkInfo)) {
+        sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_PHONE_OR_EMAIL_DIFF.msg);
+        return res.feedback(ResultCode.ERR_PHONE_OR_EMAIL_DIFF.code, { 'info1': req.session.checkInfo, 'uname': userName }, ResultCode.ERR_PHONE_OR_EMAIL_DIFF.msg);
+      }
 
       //   if (!VerifyCodeUtil.verifyCodeIsValid(req.session.verifyCodeTime)) {
       //     sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_CODE_EXPIRED.msg);
       //     return res.feedback(ResultCode.ERR_CODE_EXPIRED.code, {}, ResultCode.ERR_CODE_EXPIRED.msg);
       //   }
 
-      //   //验证验证码是否正确
-      //   if (!VerifyCodeUtil.compare(verifyCode, req.session.verifyCode) || !VerifyCodeUtil.compare(verifyType, req.session.verifyCodeType)) {
-      //     sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_INVALID_CODE.msg);
-      //     return res.feedback(ResultCode.ERR_INVALID_CODE.code, {}, ResultCode.ERR_INVALID_CODE.msg);
-      //   }
+      //验证验证码是否正确
+      if (!VerifyCodeUtil.compare(verifyCode, req.session.verifyCode) || !VerifyCodeUtil.compare(verifyType, req.session.verifyCodeType)) {
+        sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_INVALID_CODE.msg);
+        return res.feedback(ResultCode.ERR_INVALID_CODE.code, {}, ResultCode.ERR_INVALID_CODE.msg);
+      }
 
       //Determine whether the user is registered
       try {
@@ -242,17 +242,17 @@ module.exports = {
 
   /**
    * @description： 修改登录密码
-   * @param {userName,oldPassword,newPassword} req 
+   * @param {employeesID,oldPassword,newPassword} req 
    * @param {*} res 
    */
   changeLoginPwd: async function(req, res) {
     try {
       //获取参数并检测是否正确
-      var userName = req.param('userName');
+      var employeesID = req.param('employeesID');
       var oldPassword = req.body.oldPassword;
       var newPassword = req.body.newPassword;
       var userData = null;
-      if (Utils.isNil(userName)) {
+      if (Utils.isNil(employeesID)) {
         sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
         return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
       }
@@ -319,13 +319,13 @@ module.exports = {
   resetLoginPwd: async function(req, res) {
     try {
       //获取参数并检测是否正确
-      var userName = req.param('userName');
+      var employeesID = req.param('employeesID');
       var verifyCode = req.body.verifyCode;
       var password = req.body.password;
-      var verifyType = CONST.TIPS[4].type; //验证码类型
+      // var verifyType = CONST.TIPS[4].type; //验证码类型
       var userData = null;
 
-      if (Utils.isNil(userName)) {
+      if (Utils.isNil(employeesID)) {
         sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
         return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
       }
@@ -357,13 +357,13 @@ module.exports = {
       }
 
       //验证验证码是否正确
-      if (!VerifyCodeUtil.compare(verifyCode, req.session.verifyCode) || !VerifyCodeUtil.compare(verifyType, req.session.verifyCodeType)) {
+      if (!VerifyCodeUtil.compare(verifyCode, req.session.verifyCode)) {
         sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_INVALID_CODE.msg);
         return res.feedback(ResultCode.ERR_INVALID_CODE.code, {}, ResultCode.ERR_INVALID_CODE.msg);
       }
 
       try {
-        userData = await User.find({ 'userName': userName }).decrypt();
+        userData = await User.find({ 'employeesID': employeesID }).decrypt();
       } catch (err) {
         sails.log.error(new Date().toISOString(), __filename + ":" + __line, err);
         return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
@@ -440,10 +440,10 @@ module.exports = {
    */
   getEmpInfo: async function(req, res) {
     try {
-      var userName = req.param('userName')
+      var employeesID = req.param('employeesID')
       var page = req.param('page')
       var empStatus = req.param('empStatus')
-      if (Utils.isNil(userName)) {
+      if (Utils.isNil(employeesID)) {
         sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
         return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
       }
