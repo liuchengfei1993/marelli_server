@@ -190,7 +190,7 @@ module.exports = {
       var to = req.body.to
       var from = req.body.from
       var text = req.body.text
-      var picture = req.session.picture || ''
+      var pictureUrl = req.session.image || ''
       var time = req.body.time
       var id = req.body.id || '0'
       var findResult = null
@@ -232,7 +232,7 @@ module.exports = {
           from: from,
           text: text,
           type: type,
-          time
+          time: time
         }
       }
       //如果类型是公司简介
@@ -244,26 +244,28 @@ module.exports = {
           from: '',
           text: text,
           type: type,
-          time
+          time: time
         }
       }
-      sails.log.debug(data)
       //如果类型是福利
       if (type === CONST.ARTICLE.WELFARE) {
-        if (Utils.isNil(picture)) {
+        if (Utils.isNil(pictureUrl)) {
           sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
           return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
         }
-        data = {
-          title: title,
-          to: to,
-          from: from,
-          text: text,
-          picture: picture,
-          type: type,
-          time
-        }
+        var newPath = await Utils.moveImg(pictureUrl)
+        sails.log.debug(newPath)
       }
+      data = {
+        title: title,
+        to: to,
+        from: from,
+        text: text,
+        picture: newPath,
+        type: type,
+        time: time
+      }
+
       //查看数据库是否有相同的标题或者相同的id的数据
       try {
         findResult = await Article.find({
@@ -393,12 +395,18 @@ module.exports = {
         }
         //判断文件类型是否是jpg和png
         for (var i in uploadedFiles) {
-          if (!(uploadedFiles[i].type === 'image/jpeg' || 'image/jpg' || 'image/png')) {
+          var ll = (uploadedFiles[i].type === 'image/jpeg' || 'image/jpg' || 'image/png')
+          if (!ll) {
             sails.log.error(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_TYPE_OF_FILE.msg);
             return res.feedback(ResultCode.ERR_TYPE_OF_FILE.code, uploadedFiles[i].type, ResultCode.ERR_TYPE_OF_FILE.msg);
           }
         }
+        sails.log.debug(req.session.imageTitle !== title)
+        if (Utils.fileExist(req.session.image)) {
+          Utils.deleteFile(req.session.image)
+        }
         req.session.image = uploadedFiles[0].fd
+        req.session.imageTitle = title
         // if (Utils.isNil(req.session.upload)) {
         //   req.session.upload = {
         //     license: '',
