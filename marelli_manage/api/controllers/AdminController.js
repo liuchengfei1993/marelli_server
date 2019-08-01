@@ -368,8 +368,8 @@ module.exports = {
       // }
       // var ext = '.png'
       var file = req.file('image').on('error', () => {
-        sails.log.error(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_TO_UPLOAD.msg);
-        return res.feedback(ResultCode.ERR_TO_UPLOAD.code, {}, ResultCode.ERR_TO_UPLOAD.msg);
+        // sails.log.error(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_TO_UPLOAD.msg);
+        // return res.feedback(ResultCode.ERR_TO_UPLOAD.code, {}, ResultCode.ERR_TO_UPLOAD.msg);
       });
       if (!file._files[0]) {
         sails.log.error(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_TO_UPLOAD.msg);
@@ -395,13 +395,13 @@ module.exports = {
         }
         //判断文件类型是否是jpg和png
         for (var i in uploadedFiles) {
-          var ll = (uploadedFiles[i].type === 'image/jpeg' || 'image/jpg' || 'image/png')
-          if (!ll) {
+          var type = uploadedFiles[i].type
+          if (type !== ('image/jpeg' && 'image/jpg' && 'image/png')) {
+            Utils.deleteFile(uploadedFiles[i].fd)
             sails.log.error(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_TYPE_OF_FILE.msg);
             return res.feedback(ResultCode.ERR_TYPE_OF_FILE.code, uploadedFiles[i].type, ResultCode.ERR_TYPE_OF_FILE.msg);
           }
         }
-        sails.log.debug(req.session.imageTitle !== title)
         if (Utils.fileExist(req.session.image)) {
           Utils.deleteFile(req.session.image)
         }
