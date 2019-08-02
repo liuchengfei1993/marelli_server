@@ -396,7 +396,7 @@ module.exports = {
         //判断文件类型是否是jpg和png
         for (var i in uploadedFiles) {
           var type = uploadedFiles[i].type
-          if (type !== ('image/jpeg' && 'image/jpg' && 'image/png')) {
+          if ((type !== 'image/jpeg') && (type !== 'image/jpg') && (type !== 'image/png')) {
             Utils.deleteFile(uploadedFiles[i].fd)
             sails.log.error(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_TYPE_OF_FILE.msg);
             return res.feedback(ResultCode.ERR_TYPE_OF_FILE.code, uploadedFiles[i].type, ResultCode.ERR_TYPE_OF_FILE.msg);
