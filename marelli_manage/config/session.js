@@ -37,7 +37,7 @@ module.exports.session = {
   // },
 
   cookie: {
-    maxAge: 24 * 60 * 60 //有效期一天
+    maxAge: 24 * 60 * 60 * 1000 //有效期一天
   },
 
   adapter: 'redis',
