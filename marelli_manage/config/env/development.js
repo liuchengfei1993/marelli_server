@@ -227,8 +227,8 @@ module.exports = {
     },
 
     adapter: 'redis',
-    // host: '172.17.0.2',
-    host: 'localhost',
+    host: '172.17.0.2',
+    // host: 'localhost',
     port: 6379,
     db: 2,
 
