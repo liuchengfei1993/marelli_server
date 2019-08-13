@@ -99,6 +99,9 @@ module.exports = {
       }
       var total = findResult.length
       findResult = findResult.slice((page - 1) * CONST.pagenation.skip, page * CONST.pagenation.limit);
+      for (var i = 0; i < findResult.length; i++) {
+        findResult[i] = Utils.clearPrivateInfo(findResult[i]);
+      }
       var resData = {
         findResult: findResult,
         total: total
@@ -163,10 +166,11 @@ module.exports = {
           break;
       }
       if (Utils.isNil(findResult)) {
-        return res.feedback(ResultCode.OK_TO_GET.code, findResult, ResultCode.OK_TO_GET.msg);
+        findResult = []
+      } else {
+        findResult = findResult.slice((page - 1) * CONST.pagenation.skip, page * CONST.pagenation.limit);
       }
       var total = findResult.length
-      findResult = findResult.slice((page - 1) * CONST.pagenation.skip, page * CONST.pagenation.limit);
       var resData = {
         findResult: findResult,
         total: total
@@ -376,7 +380,7 @@ module.exports = {
         return res.feedback(ResultCode.ERR_TO_UPLOAD.code, {}, ResultCode.ERR_TO_UPLOAD.msg);
       }
       var name = file._files[0].stream.filename;
-      let ext = name.substring(name.lastIndexOf("."));
+      var ext = name.substring(name.lastIndexOf("."));
       req.file('image').upload({
         // don't allow the total upload size to exceed ~10MB
         maxBytes: CONST.attachment.attachment_max_byte,
@@ -452,15 +456,15 @@ module.exports = {
    */
   updateUserData: async function(req, res) {
     try {
-      // let id = req.param("id"); // id
-      let data = req.body;
-      // let employeesID = data.employeesID; // 员工编号
-      // let department = data.department; // 部门
-      // let IDCard = data.IDCard; // 身份证号码
-      // let gender = data.gender; // 性别
-      // let phone = data.phone; // 手机号
-      let id = data.id; // id
-      let difficultEmp = data.difficultEmp; //是否是困难员工
+      // var id = req.param("id"); // id
+      var data = req.body;
+      // var employeesID = data.employeesID; // 员工编号
+      // var department = data.department; // 部门
+      // var IDCard = data.IDCard; // 身份证号码
+      // var gender = data.gender; // 性别
+      // var phone = data.phone; // 手机号
+      var id = data.id; // id
+      var difficultEmp = data.difficultEmp; //是否是困难员工
       let excellentEmp = data.excellentEmp; //是否是优秀员工
       if (Utils.isNil(id)) {
         sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);

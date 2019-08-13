@@ -10,8 +10,8 @@ module.exports = {
   attributes: {
     // openId:       { type: 'string', required: true, unique: true, maxLength: 64 },//微信号ID
     userName: { type: 'string', required: true, maxLength: 64 }, //用户名
-    password: { type: 'string', required: true, protect: true, encrypt: true, maxLength: 512 }, // 登陆密码
-    salt: { type: 'string', required: true, protect: true, encrypt: true, maxLength: 64 }, //加密盐
+    password: { type: 'string', required: true, maxLength: 512 }, // 登陆密码
+    salt: { type: 'string', required: true, maxLength: 64 }, //加密盐
     employeesID: { type: 'string', maxLength: 64, unique: true, }, // 员工编号
     department: { type: 'string', maxLength: 256 }, // 部门
     IDCard: { type: 'string', maxLength: 18 }, // 身份证号码

@@ -33,16 +33,16 @@ module.exports = {
       //     return res.feedback(ResultCode.ERR_INVALID_CODE_TYPE.code, {}, ResultCode.ERR_INVALID_CODE_TYPE.msg);
       // }
 
-      if (!Utils.isNil(req.session.verifyErrorTimes) &&
-        (req.session.verifyErrorTimes >= CONST.VERIFY_ERROR_TIMES)) {
-        sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MAX_VERIFY_TIMES.msg);
-        req.session.imgCodeEnable = true; //验证码错误次数超过上限，将启动图形验证码
-      }
+      // if (!Utils.isNil(req.session.verifyErrorTimes) &&
+      //   (req.session.verifyErrorTimes >= CONST.VERIFY_ERROR_TIMES)) {
+      //   sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MAX_VERIFY_TIMES.msg);
+      //   req.session.imgCodeEnable = true; //验证码错误次数超过上限，将启动图形验证码
+      // }
 
-      var data = module.exports._enableImageCode(req, res);
-      if (data !== null) {
-        return res.feedback(data.code, {}, data.msg);
-      }
+      // var data = module.exports._enableImageCode(req, res);
+      // if (data !== null) {
+      //   return res.feedback(data.code, {}, data.msg);
+      // }
       module.exports._sendVerifyCode(phone, res, req);
     } catch (err) {
       sails.log.error(new Date().toISOString(), __filename + ":" + __line, err);
@@ -67,7 +67,7 @@ module.exports = {
       if (imgCode === '0') {
         return ResultCode.ERR_MISS_IMG_CODE;
       }
-      if (!VerifyImgUtil.verifyImgIsValid(req.session.verifyImgTime)) {
+      if (!VerifyCodeUtil.verifyCodeIsValid(req.session.verifyImgTime)) {
         sails.log.info(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_VERIFY_EXPIRED.msg);
         return ResultCode.ERR_VERIFY_EXPIRED;
       }
@@ -81,7 +81,7 @@ module.exports = {
       if (req.session.imgCodeEnable || false) {
         imgCode = '' + imgCode
 
-        if (!VerifyImgUtil.verifyImgIsValid(req.session.verifyImgTime)) {
+        if (!VerifyCodeUtil.verifyCodeIsValid(req.session.verifyImgTime)) {
           sails.log.info(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_VERIFY_EXPIRED.msg);
           return ResultCode.ERR_VERIFY_EXPIRED;
         }
@@ -134,7 +134,7 @@ module.exports = {
         // req.session.verifyCodeType = CONST.TIPS[_type].type;
         req.session.verifyCodeTime = new Date().getTime();
         req.session.checkInfo = phone;
-        req.session.verifyErrorTimes = 0;
+        // req.session.verifyErrorTimes = 0;
         return res.feedback(ResultCode.OK_SEND_CODE.code, {}, ResultCode.OK_SEND_CODE.msg);
       }
     } else { //发邮件
@@ -147,7 +147,7 @@ module.exports = {
       // req.session.verifyCodeType = CONST.TIPS[_type].type;
       req.session.verifyCodeTime = new Date().getTime();
       req.session.checkInfo = phone;
-      req.session.verifyErrorTimes = 0;
+      // req.session.verifyErrorTimes = 0;
       return res.feedback(ResultCode.OK_SEND_CODE.code, {}, ResultCode.OK_SEND_CODE.msg, true);
     }
   },
@@ -217,11 +217,11 @@ module.exports = {
     }
 
     if (!VerifyCodeUtil.compare(verifyCode, req.session.verifyCode)) {
-      req.session.verifyErrorTimes++;
+      // req.session.verifyErrorTimes++;
       sails.log.info(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_INVALID_CODE.msg);
       return res.feedback(ResultCode.ERR_INVALID_CODE.code, {}, ResultCode.ERR_INVALID_CODE.msg);
     }
-    req.session.verifyErrorTimes = 0;
+    // req.session.verifyErrorTimes = 0;
     return res.feedback(ResultCode.OK_VERIFY_CODE.code, {}, ResultCode.OK_VERIFY_CODE.msg);
 
   },
@@ -232,8 +232,8 @@ module.exports = {
     var type = Math.round(Math.random() * 100) % 2
     var captcha;
     var options = {
-      width: 140,
-      height: 27,
+      width: 180,
+      height: 65,
       size: 4 + Math.round(Math.random() * 100) % 2,
       noise: 2,
       ignoreChars: '0o1i'
@@ -268,13 +268,13 @@ module.exports = {
     }
 
     // expired 60s 和短信验证码使用相同的计时变量
-    if (!VerifyImgUtil.verifyImgIsValid(req.session.verifyImgTime)) {
+    if (!VerifyCodeUtil.verifyImgCodeIsValid(req.session.verifyImgTime)) {
       sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_VERIFY_EXPIRED.msg);
       return res.feedback(ResultCode.ERR_VERIFY_EXPIRED.code, {}, ResultCode.ERR_VERIFY_EXPIRED.msg);
     }
 
     imgCode = '' + imgCode;
-    if (!VerifyImgUtil.compare(imgCode.toLowerCase(), req.session.imgCode.toLowerCase())) {
+    if (!VerifyCodeUtil.compare(imgCode.toLowerCase(), req.session.imgCode.toLowerCase())) {
       sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_INVALID_CODE.msg);
       return res.feedback(ResultCode.ERR_INVALID_CODE.code, {}, ResultCode.ERR_INVALID_CODE.msg);
     }

@@ -13,7 +13,7 @@ module.exports = {
    */
   register: async function(req, res) {
     try {
-      var userName = req.param('userName')
+      var userName = req.body.userName
       var password = req.body.password
       // var openId = req.body.openId
       var employeesID = req.body.employeesID
@@ -61,9 +61,9 @@ module.exports = {
       // }
 
       //接收验证码手机或邮箱必须是填写手机或邮箱
-      if (Utils.isNil(req.session.checkInfo) || !VerifyCodeUtil.compare(userName, req.session.checkInfo)) {
+      if (Utils.isNil(req.session.checkInfo) || !VerifyCodeUtil.compare(phone, req.session.checkInfo)) {
         sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_PHONE_OR_EMAIL_DIFF.msg);
-        return res.feedback(ResultCode.ERR_PHONE_OR_EMAIL_DIFF.code, { 'info1': req.session.checkInfo, 'uname': userName }, ResultCode.ERR_PHONE_OR_EMAIL_DIFF.msg);
+        return res.feedback(ResultCode.ERR_PHONE_OR_EMAIL_DIFF.code, { 'info1': req.session.checkInfo, 'uname': phone }, ResultCode.ERR_PHONE_OR_EMAIL_DIFF.msg);
       }
 
       //   if (!VerifyCodeUtil.verifyCodeIsValid(req.session.verifyCodeTime)) {
@@ -72,7 +72,7 @@ module.exports = {
       //   }
 
       //验证验证码是否正确
-      if (!VerifyCodeUtil.compare(verifyCode, req.session.verifyCode) || !VerifyCodeUtil.compare(verifyType, req.session.verifyCodeType)) {
+      if (!VerifyCodeUtil.compare(verifyCode, req.session.verifyCode)) {
         sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_INVALID_CODE.msg);
         return res.feedback(ResultCode.ERR_INVALID_CODE.code, {}, ResultCode.ERR_INVALID_CODE.msg);
       }
@@ -84,7 +84,7 @@ module.exports = {
             { 'employeesID': employeesID },
             // { 'openId': openId }
           ]
-        }).decrypt();
+        })
       } catch (err) {
         sails.log.error(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_SYSTEM_DB.msg, err);
         return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
@@ -110,7 +110,7 @@ module.exports = {
           IDCard: IDCard,
           gender: gender,
           phone: phone
-        }).fetch().decrypt()
+        }).fetch()
       } catch (err) {
         sails.log.error(new Date().toISOString(), __filename + ":" + __line, err);
       }
@@ -149,7 +149,7 @@ module.exports = {
         // var userData = await User.find({ userName: userName } || { phone: userName } || { email: userName }).decrypt()
         userData = await User.find({
           'employeesID': employeesID
-        }).decrypt();
+        })
         userData = userData[0];
       } catch (err) {
         sails.log.error(new Date().toISOString(), __filename + ":" + __line, err);
@@ -265,14 +265,14 @@ module.exports = {
         return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
       }
 
-      if (!validator.isValid('Password', oldPassword)) {
-        sails.log.debug(new Date().toISOString(), __filename + ":" + __line, userName, ResultCode.ERR_FORMAT_PASSWORD.msg);
-        return res.feedback(ResultCode.ERR_FORMAT_PASSWORD.code, {}, ResultCode.ERR_FORMAT_PASSWORD.msg);
-      }
-      if (!validator.isValid('Password', newPassword)) {
-        sails.log.debug(new Date().toISOString(), __filename + ":" + __line, userName, ResultCode.ERR_FORMAT_PASSWORD.msg);
-        return res.feedback(ResultCode.ERR_FORMAT_PASSWORD.code, {}, ResultCode.ERR_FORMAT_PASSWORD.msg);
-      }
+      // if (!validator.isValid('Password', oldPassword)) {
+      //   sails.log.debug(new Date().toISOString(), __filename + ":" + __line, userName, ResultCode.ERR_FORMAT_PASSWORD.msg);
+      //   return res.feedback(ResultCode.ERR_FORMAT_PASSWORD.code, {}, ResultCode.ERR_FORMAT_PASSWORD.msg);
+      // }
+      // if (!validator.isValid('Password', newPassword)) {
+      //   sails.log.debug(new Date().toISOString(), __filename + ":" + __line, userName, ResultCode.ERR_FORMAT_PASSWORD.msg);
+      //   return res.feedback(ResultCode.ERR_FORMAT_PASSWORD.code, {}, ResultCode.ERR_FORMAT_PASSWORD.msg);
+      // }
       // try {
       //     var findData = await User.find({ userName: userName }).decrypt();
       // } catch (err) {
@@ -340,13 +340,13 @@ module.exports = {
         return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
       }
 
-      if (!validator.isValid('Password', password)) {
-        sails.log.debug(new Date().toISOString(), __filename + ":" + __line, userName, ResultCode.ERR_FORMAT_PASSWORD.msg);
-        return res.feedback(ResultCode.ERR_FORMAT_PASSWORD.code, {}, ResultCode.ERR_FORMAT_PASSWORD.msg);
-      }
+      // if (!validator.isValid('Password', password)) {
+      //   sails.log.debug(new Date().toISOString(), __filename + ":" + __line, userName, ResultCode.ERR_FORMAT_PASSWORD.msg);
+      //   return res.feedback(ResultCode.ERR_FORMAT_PASSWORD.code, {}, ResultCode.ERR_FORMAT_PASSWORD.msg);
+      // }
 
       //接收验证码手机或邮箱必须是填写手机或邮箱
-      if (Utils.isNil(req.session.checkInfo) || !VerifyCodeUtil.compare(userName, req.session.checkInfo)) {
+      if (Utils.isNil(req.session.checkInfo) || !VerifyCodeUtil.compare(req.session.user.phone, req.session.checkInfo)) {
         sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_PHONE_OR_EMAIL_DIFF.msg);
         return res.feedback(ResultCode.ERR_PHONE_OR_EMAIL_DIFF.code, {}, ResultCode.ERR_PHONE_OR_EMAIL_DIFF.msg);
       }
@@ -386,7 +386,14 @@ module.exports = {
       req.session.verifyCodeType = null;
       req.session.checkInfo = null;
       req.session.verifyErrorTimes = 0;
-      return res.feedback(ResultCode.OK_SET.code, {}, ResultCode.OK_SET.msg);
+      req.session.user = userData
+      sails.log.debug(userData)
+      delete userData.password
+      delete userData.salt
+      delete userData.createdAt
+      delete userData.updatedAt
+      var resData = userData
+      return res.feedback(ResultCode.OK_SET.code, resData, ResultCode.OK_SET.msg);
     } catch (err) {
       sails.log.error(new Date().toISOString(), __filename + ":" + __line, err);
       return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
@@ -455,7 +462,7 @@ module.exports = {
         sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
         return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
       }
-      var findResult = null
+      var findResult = []
       if (empStatus === CONST.DIFFICULTEMP) {
         try {
           findResult = await User.find({
@@ -477,13 +484,15 @@ module.exports = {
         }
       }
       if (Utils.isNil(findResult)) {
-        return res.feedback(ResultCode.OK_TO_GET.code, findResult, ResultCode.OK_TO_GET.msg);
+        var empList = findResult
+      } else {
+        empList = findResult.slice((page - 1) * CONST.pagenation.skip, page * CONST.pagenation.limit);
       }
-      res = findResult.slice((page - 1) * CONST.pagenation.skip, page * CONST.pagenation.limit);
       var resData = {
-        findResult: res,
+        findResult: empList,
         total: findResult.length
       }
+      sails.log.debug(resData)
       return res.feedback(ResultCode.OK_TO_GET.code, resData, ResultCode.OK_TO_GET.msg);
     } catch (error) {
       sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
@@ -498,9 +507,9 @@ module.exports = {
    */
   getLawyerInfo: async function(req, res) {
     try {
-      var userName = req.param('userName');
+      var employeesID = req.param('employeesID');
       var page = req.param('page');
-      if (Utils.isNil(userName)) {
+      if (Utils.isNil(employeesID)) {
         sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
         return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
       }
@@ -547,17 +556,18 @@ module.exports = {
         sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
         return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
       }
-      var findResult = null
+      var findResult = []
       try {
-        findResult = await Article.find({ where: { type: type }, sort: [{ 'id': 'DESC' }] })
+        findResult = await Article.find({ where: { type: type, status: true }, sort: [{ 'id': 'DESC' }] })
       } catch (error) {
         sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
         return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
       }
       if (Utils.isNil(findResult[0])) {
-        return res.feedback(ResultCode.OK_TO_GET.code, findResult, ResultCode.OK_TO_GET.msg);
+        findResult = []
+      } else {
+        findResult = findResult.slice((page - 1) * CONST.pagenation.skip, page * CONST.pagenation.limit);
       }
-      findResult = findResult.slice((page - 1) * CONST.pagenation.skip, page * CONST.pagenation.limit);
       var resData = {
         findResult: findResult,
         total: findResult.length

@@ -3,9 +3,9 @@
  * Crush to remove comments, shorten variable names and
  * generally reduce transmission size.
  *
- * @author xdjiang
- * @author xdjiang
- * @author xdjiang
+ * @author liuchengfei
+ * @author liuchengfei
+ * @author liuchengfei
  */
 
 module.exports = {

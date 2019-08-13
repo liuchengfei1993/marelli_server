@@ -3,9 +3,9 @@
  * Crush to remove comments, shorten variable names and
  * generally reduce transmission size.
  *
- * @author xdjiang
- * @author xdjiang
- * @author xdjiang
+ * @author liuchengfei
+ * @author liuchengfei
+ * @author liuchengfei
  */
 
 module.exports = {
@@ -17,6 +17,10 @@ module.exports = {
 
   // 短信验证码超时最长时间
   VERIFY_CODE_TIME_MAX: 60000 * 5,
+
+  //图形验证码超时最长时间
+  IMG_CODE_TIME_MAX: 60000,
+
 
   // 邮件验证码超时最长时间
   VERIFY_EMAIL_CODE_TIME_MAX: 60000 * 60,
