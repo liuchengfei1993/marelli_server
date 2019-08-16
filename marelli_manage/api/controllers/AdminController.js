@@ -165,12 +165,12 @@ module.exports = {
           }
           break;
       }
+      var total = findResult.length
       if (Utils.isNil(findResult)) {
         findResult = []
       } else {
         findResult = findResult.slice((page - 1) * CONST.pagenation.skip, page * CONST.pagenation.limit);
       }
-      var total = findResult.length
       var resData = {
         findResult: findResult,
         total: total
@@ -450,43 +450,266 @@ module.exports = {
   },
 
   /**
-   * @description:修改员工信息接口
+   * @description:添加/修改员工信息接口
    * @param {*} req 
    * @param {*} res 
    */
   updateUserData: async function(req, res) {
     try {
-      // var id = req.param("id"); // id
       var data = req.body;
-      // var employeesID = data.employeesID; // 员工编号
-      // var department = data.department; // 部门
-      // var IDCard = data.IDCard; // 身份证号码
-      // var gender = data.gender; // 性别
-      // var phone = data.phone; // 手机号
+      var employeesID = data.employeesID; // 员工编号
+      var department = data.department; // 部门
+      var IDCard = data.IDCard; // 身份证号码
+      var gender = data.gender; // 性别
+      var phone = data.phone; // 手机号
       var id = data.id; // id
+      var userName = data.userName //姓名
       var difficultEmp = data.difficultEmp; //是否是困难员工
-      let excellentEmp = data.excellentEmp; //是否是优秀员工
+      var excellentEmp = data.excellentEmp; //是否是优秀员工
+      // if (Utils.isNil(difficultEmp)) {
+      //   sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+      //   return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+      // }
+      // if (Utils.isNil(excellentEmp)) {
+      //   sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+      //   return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+      // }
+      if (Utils.isNil(id)) {
+        if (Utils.isNil(userName)) {
+          sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+          return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+        }
+        if (Utils.isNil(employeesID)) {
+          sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+          return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+        }
+        if (Utils.isNil(department)) {
+          sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+          return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+        }
+        if (Utils.isNil(IDCard)) {
+          sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+          return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+        }
+        if (Utils.isNil(gender)) {
+          sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+          return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+        }
+        if (Utils.isNil(phone)) {
+          sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+          return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+        }
+        try {
+          var findResult = await User.find({
+            or: [
+              { 'employeesID': employeesID },
+            ]
+          })
+        } catch (err) {
+          sails.log.error(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_SYSTEM_DB.msg, err);
+          return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
+        }
+        if (!Utils.isNil(findResult)) {
+          sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_USER_EXISTS.msg);
+          return res.feedback(ResultCode.ERR_USER_EXISTS.code, {}, ResultCode.ERR_USER_EXISTS.msg);
+        }
+        var salt = Utils.getSalt()
+        var password = IDCard.substring(12, 18)
+        password = Utils.secretHash(password, salt, password);
+        try {
+          createData = await User.create({
+            userName: userName,
+            password: password,
+            salt: salt,
+            employeesID: employeesID,
+            department: department,
+            IDCard: IDCard,
+            gender: gender,
+            phone: phone,
+            excellentEmp: excellentEmp,
+            difficultEmp: difficultEmp
+          }).fetch()
+          return res.feedback(ResultCode.OK_TO_ADD.code, {}, ResultCode.OK_TO_ADD.msg)
+        } catch (error) {
+          sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
+          return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
+        }
+      } else {
+
+        try {
+          var resData = await User.update({ id: id }).set({
+            userName: userName,
+            employeesID: employeesID,
+            department: department,
+            IDCard: IDCard,
+            gender: gender,
+            phone: phone,
+            // password: password,
+            // salt: salt,
+            excellentEmp: excellentEmp,
+            difficultEmp: difficultEmp
+          }).fetch()
+          sails.log.debug('res:', resData)
+          return res.feedback(ResultCode.OK_TO_AMEND.code, {}, ResultCode.OK_TO_AMEND.msg)
+        } catch (error) {
+          sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
+          return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
+        }
+      }
+
+    } catch (err) {
+      sails.log.error(new Date().toISOString(), __filename + ":" + __line, err);
+      return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
+    }
+  },
+
+  /**
+   * @description 删除员工
+   * @param {*} req 
+   * @param {*} res 
+   */
+  deleteEmp: async function(req, res) {
+    try {
+      var id = req.body.id
+      sails.log.debug(id)
       if (Utils.isNil(id)) {
         sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
         return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
       }
-      if (Utils.isNil(difficultEmp)) {
-        sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
-        return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
-      }
-      if (Utils.isNil(excellentEmp)) {
-        sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
-        return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
-      }
       try {
-        await User.update({ id: id }).set({ difficultEmp: difficultEmp, excellentEmp: excellentEmp })
+        var resData = await User.destroy({ id: id }).fetch()
       } catch (error) {
         sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
         return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
       }
-      return res.feedback(ResultCode.OK_TO_AMEND.code, {}, ResultCode.OK_TO_AMEND.msg)
-    } catch (err) {
-      sails.log.error(new Date().toISOString(), __filename + ":" + __line, err);
+      sails.log.debug("resData", resData)
+      return res.feedback(ResultCode.OK_TO_DELETE.code, {}, ResultCode.OK_TO_DELETE.msg)
+    } catch (error) {
+      sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
+      return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
+    }
+  },
+
+  /**
+   * @description 获取律师信息
+   * @param {*} req 
+   * @param {*} res 
+   */
+  getLawyerInfo: async function(req, res) {
+    try {
+      var page = req.param('page')
+      if (Utils.isNil(page)) {
+        sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+        return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+      }
+      try {
+        var findResult = await Lawyer.find()
+        findResult = findResult.reverse()
+      } catch (error) {
+        sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
+        return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
+      }
+      var total = findResult.length
+      if (Utils.isNil(findResult)) {
+        findResult = []
+      } else {
+        findResult = findResult.slice((page - 1) * CONST.pagenation.skip, page * CONST.pagenation.limit);
+      }
+      var resData = {
+        findResult: findResult,
+        total: total
+      }
+      return res.feedback(ResultCode.OK_TO_GET.code, resData, ResultCode.OK_TO_GET.msg);
+    } catch (error) {
+      sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
+      return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
+    }
+  },
+
+
+  /**
+   * @description 删除律师信息
+   * @param {*} req 
+   * @param {*} res 
+   */
+  deleteLawyer: async function(req, res) {
+    try {
+      sails.log.debug(req.body)
+      var id = req.body.id
+      if (Utils.isNil(id)) {
+        sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+        return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+      }
+      try {
+        await Lawyer.destroy({ id: id })
+      } catch (error) {
+        sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
+        return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
+      }
+      return res.feedback(ResultCode.OK_TO_DELETE.code, {}, ResultCode.OK_TO_DELETE.msg)
+    } catch (error) {
+      sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
+      return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
+    }
+  },
+
+  /**
+   * @description 添加或修改律师信息
+   * @param {*} req 
+   * @param {*} res 
+   */
+  updateLawyer: async function(req, res) {
+    try {
+      var id = req.body.id
+      var lawyerName = req.body.lawyerName
+      var gender = req.body.gender
+      var phone = req.body.phone
+      var email = req.body.email
+      if (Utils.isNil(id)) {
+        if (Utils.isNil(lawyerName)) {
+          sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+          return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+        }
+        if (Utils.isNil(gender)) {
+          sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+          return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+        }
+        if (Utils.isNil(phone)) {
+          sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+          return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+        }
+        if (Utils.isNil(email)) {
+          sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+          return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+        }
+        try {
+          await Lawyer.create({
+            lawyerName: lawyerName,
+            gender: gender,
+            phone: phone,
+            email: email
+          })
+        } catch (error) {
+          sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
+          return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
+        }
+        return res.feedback(ResultCode.OK_TO_ADD.code, {}, ResultCode.OK_TO_ADD.msg)
+      } else {
+        try {
+          await Lawyer.update({ id: id }).set({
+            lawyerName: lawyerName,
+            gender: gender,
+            phone: phone,
+            email: email
+          })
+        } catch (error) {
+          sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
+          return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
+        }
+        return res.feedback(ResultCode.OK_TO_AMEND.code, {}, ResultCode.OK_TO_AMEND.msg)
+      }
+    } catch (error) {
+      sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
       return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
     }
   }

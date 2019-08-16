@@ -54,5 +54,6 @@ module.exports = {
   ERR_TO_AMEND: { code: '9002', msg: '修改失败' },
   OK_TO_DELETE: { code: '0', msg: '删除成功' },
   ERR_TO_DELETE: { code: '9003', msg: '删除失败' },
-
+  OK_TO_ADD: { code: '0', msg: '添加成功' },
+  ERR_TO_ADD: { code: '9004', msg: '添加失败' }
 };

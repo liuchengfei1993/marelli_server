@@ -20,6 +20,7 @@
     "sails-hook-sockets": "^2.0.0",
     "sails-mysql": "^1.0.1",
     "sails-redis": "^1.0.0",
+    "sails.io.js": "^1.2.1",
     "sjcl": "^1.0.8"
   },
   "devDependencies": {

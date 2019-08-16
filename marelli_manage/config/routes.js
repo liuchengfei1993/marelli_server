@@ -27,7 +27,13 @@ module.exports.routes = {
   'post /marelli_manage/admin/uploadImage/:userName': { controller: 'AdminController', action: 'uploadImage' },
   'post /marelli_manage/admin/deleteArticle/:userName': { controller: 'AdminController', action: 'deleteArticle' },
   'post /marelli_manage/admin/updateUserData/:userName': { controller: 'AdminController', action: 'updateUserData' },
-  // 'post /marelli_manage/admin/uploadImage/:userName': { controller: 'AdminController', action: 'uploadImage' },
+  'post /marelli_manage/admin/deleteEmp/:userName': { controller: 'AdminController', action: 'deleteEmp' },
+  'get /marelli_manage/admin/getLawyerInfo/:userName': { controller: 'AdminController', action: 'getLawyerInfo' },
+  'post /marelli_manage/admin/deleteLawyer/:userName': { controller: 'AdminController', action: 'deleteLawyer' },
+  'post /marelli_manage/admin/updateLawyer/:userName': { controller: 'AdminController', action: 'updateLawyer' },
+
+
+
 
 
 

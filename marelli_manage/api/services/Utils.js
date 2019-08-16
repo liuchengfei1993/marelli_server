@@ -257,7 +257,7 @@ module.exports = {
   clearPrivateInfo: function(userInfo) {
     if (!userInfo) return null;
     var newUserInfo = JSON.parse(JSON.stringify(userInfo));
-    delete newUserInfo.id;
+    // delete newUserInfo.id;
     delete newUserInfo.salt;
     delete newUserInfo.password;
     delete newUserInfo.createdAt;
