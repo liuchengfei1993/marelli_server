@@ -380,6 +380,8 @@ module.exports = {
         return res.feedback(ResultCode.ERR_TO_UPLOAD.code, {}, ResultCode.ERR_TO_UPLOAD.msg);
       }
       var name = file._files[0].stream.filename;
+      sails.log.debug(file._files[0]);
+      sails.log.debug('name:', name)
       var ext = name.substring(name.lastIndexOf("."));
       req.file('image').upload({
         // don't allow the total upload size to exceed ~10MB
