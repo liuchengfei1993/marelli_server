@@ -406,11 +406,14 @@ module.exports = {
             return res.feedback(ResultCode.ERR_TYPE_OF_FILE.code, uploadedFiles[i].type, ResultCode.ERR_TYPE_OF_FILE.msg);
           }
         }
-        if (Utils.fileExist(req.session.image)) {
+        if (req.session.image !== uploadedFiles[0].fd) {
+          sails.log.debug(req.session.image)
           Utils.deleteFile(req.session.image)
         }
         req.session.image = uploadedFiles[0].fd
         req.session.imageTitle = title
+        var newPath = Utils.moveImg(req.session.image);
+        uploadedFiles[0].fd = newPath
         // if (Utils.isNil(req.session.upload)) {
         //   req.session.upload = {
         //     license: '',

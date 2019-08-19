@@ -26,11 +26,11 @@ module.exports = {
       var url1 = oldPath.substring(0, oldPath.lastIndexOf('/'))
       var url2 = oldPath.substring(oldPath.lastIndexOf('/'))
       var newPath = url1 + 's' + url2
-      sails.log.debug(url1, url2)
+      // sails.log.debug(url1, url2)
       //判断文件夹是否存在
       //不存在则创建
       if (!Utils.fileExist(url1 + 's')) {
-        sails.log.debug(url1 + 's')
+        // sails.log.debug(url1 + 's')
         fs.mkdir(url1 + 's', { recursive: true }, (err) => {
           if (err) throw err;
         });
@@ -52,7 +52,7 @@ module.exports = {
   fileExist: function(path) {
     try {
       fs.access(path, (err) => {
-        sails.log.debug(`${path} ${err ? 'Not exit' : 'exit'}`);
+        // sails.log.debug(`${path} ${err ? 'Not exit' : 'exit'}`);
         return true
       });
     } catch (error) {
@@ -68,7 +68,7 @@ module.exports = {
     try {
       fs.unlink(path, (err) => {
         if (err) throw err;
-        sails.log.info('已成功删除' + path);
+        sails.log.debug('已成功删除' + path);
         return true
       });
     } catch (error) {
