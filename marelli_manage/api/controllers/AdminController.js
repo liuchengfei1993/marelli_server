@@ -194,7 +194,7 @@ module.exports = {
       var to = req.body.to
       var from = req.body.from
       var text = req.body.text
-      var pictureUrl = req.session.image || ''
+      var pictureUrl = req.body.image || ''
       var time = req.body.time
       var id = req.body.id || '0'
       var findResult = null
@@ -241,9 +241,20 @@ module.exports = {
       }
       //如果类型是公司简介
       if (type === CONST.ARTICLE.COMPANY_PROFILE) {
-        title = CONST.UNION_INTRODUCTION
+        if (Utils.isNil(to)) {
+          sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+          return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+        }
+        if (Utils.isNil(type)) {
+          sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+          return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+        }
+        if (Utils.isNil(from)) {
+          sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+          return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+        }
         data = {
-          title: title,
+          title: CONST.UNION_INTRODUCTION,
           to: '',
           from: '',
           text: text,
@@ -253,6 +264,22 @@ module.exports = {
       }
       //如果类型是福利
       if (type === CONST.ARTICLE.WELFARE) {
+        if (Utils.isNil(title)) {
+          sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+          return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+        }
+        if (Utils.isNil(to)) {
+          sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+          return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+        }
+        if (Utils.isNil(type)) {
+          sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+          return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+        }
+        if (Utils.isNil(from)) {
+          sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+          return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+        }
         if (Utils.isNil(pictureUrl)) {
           sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
           return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
@@ -272,9 +299,7 @@ module.exports = {
 
       //查看数据库是否有相同的标题或者相同的id的数据
       try {
-        findResult = await Article.find({
-          or: [{ title: title }, { id: id }]
-        })
+        findResult = await Article.find({ title: title, id: id })
       } catch (error) {
         sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
         return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
@@ -287,14 +312,14 @@ module.exports = {
           sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
           return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
         }
-        return res.feedback(ResultCode.OK_TO_PUBLIC.code, {}, ResultCode.OK_TO_PUBLIC.msg)
+        return res.feedback(ResultCode.OK_TO_PUBLIC.code, findResult, ResultCode.OK_TO_PUBLIC.msg)
       }
       if (!Utils.isNil(findResult[0])) {
         try {
           await Article.update({ id: id }, data)
         } catch (error) {
           sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
-          return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
+          return res.feedback(ResultCode.ERR_SYSTEM_DB.code, findResult, ResultCode.ERR_SYSTEM_DB.msg);
         }
         return res.feedback(ResultCode.OK_TO_AMEND.code, {}, ResultCode.OK_TO_AMEND.msg)
       }
@@ -335,12 +360,12 @@ module.exports = {
    */
   uploadImage: function(req, res) {
     try {
-      var title = req.param('title')
+      // var title = req.param('title')
       // var userName = req.param('userName')
-      if (Utils.isNil(title)) {
-        sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
-        return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
-      }
+      // if (Utils.isNil(title)) {
+      //   sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+      //   return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+      // }
       //判断type类型，写入session
       // var type = req.param('type');
       // if (Utils.isNil(type)) {
@@ -379,16 +404,14 @@ module.exports = {
         sails.log.error(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_TO_UPLOAD.msg);
         return res.feedback(ResultCode.ERR_TO_UPLOAD.code, {}, ResultCode.ERR_TO_UPLOAD.msg);
       }
-      var name = file._files[0].stream.filename;
-      sails.log.debug(file._files[0]);
-      sails.log.debug('name:', name)
+      var name = req.body.fileName
       var ext = name.substring(name.lastIndexOf("."));
       req.file('image').upload({
         // don't allow the total upload size to exceed ~10MB
         maxBytes: CONST.attachment.attachment_max_byte,
         //存入指定的文件夹
         dirname: sails.config.appPath + CONST.attachment.attachment_path,
-        saveAs: title + ext
+        saveAs: Utils.rndNum(9) + ext
       }, function whenDone(err, uploadedFiles) {
         if (err) {
           sails.log.error(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_TO_UPLOAD.msg);
@@ -408,14 +431,15 @@ module.exports = {
             return res.feedback(ResultCode.ERR_TYPE_OF_FILE.code, uploadedFiles[i].type, ResultCode.ERR_TYPE_OF_FILE.msg);
           }
         }
-        if (req.session.image !== uploadedFiles[0].fd) {
-          sails.log.debug(req.session.image)
-          Utils.deleteFile(req.session.image)
-        }
-        req.session.image = uploadedFiles[0].fd
-        req.session.imageTitle = title
-        var newPath = Utils.moveImg(req.session.image);
-        uploadedFiles[0].fd = newPath
+        // if (req.session.image !== uploadedFiles[0].fd) {
+        //   sails.log.debug(req.session.image)
+        //   Utils.deleteFile(req.session.image)
+        // }
+        // req.session.image = uploadedFiles[0].fd
+        // req.session.imageTitle = title
+        // var newPath = Utils.moveImg(req.session.image);
+        // uploadedFiles[0].fd = newPath
+        // sails.log.debug('newPath:', JSON.stringify(newPath))
         // if (Utils.isNil(req.session.upload)) {
         //   req.session.upload = {
         //     license: '',
