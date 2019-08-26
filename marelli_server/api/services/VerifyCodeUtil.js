@@ -69,6 +69,10 @@ module.exports = {
     return ((now - verifyCodeTime) <= CONST.VERIFY_CODE_TIME_MAX);
   },
 
+  verifyImgCodeIsValid: function(verifyCodeTime) {
+    var now = new Date().getTime();
+    return ((now - verifyCodeTime) <= CONST.IMG_CODE_TIME_MAX);
+  },
   /*
   比较邮箱验证码时效性(60分钟)
   */
