@@ -110,10 +110,11 @@ module.exports = {
     //   }
     // }
     var code;
-    if (process.env.NODE_ENV !== "production") {
-      code = 999999;
-    } else {
+    if (process.env.NODE_ENV === "production") {
       code = Utils.rndNum(6);
+    } else {
+      code = 999999;
+
     }
 
     code = '' + code;

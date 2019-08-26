@@ -18,7 +18,6 @@
  * For more best practices and tips, see:
  * https://sailsjs.com/docs/concepts/deployment
  */
-
 module.exports = {
 
 
@@ -224,12 +223,12 @@ module.exports = {
       // secure: true,
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
     },
-
     adapter: 'redis',
     host: '172.17.0.2',
     // host: 'localhost',
     port: 6379,
     db: 2,
+
 
   },
 
@@ -328,7 +327,7 @@ module.exports = {
      * (https://sailsjs.com/config/http)                                        *
      *                                                                          *
      ***************************************************************************/
-    // trustProxy: true,
+    trustProxy: true,
 
   },
 

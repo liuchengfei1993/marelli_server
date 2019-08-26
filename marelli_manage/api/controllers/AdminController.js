@@ -19,7 +19,6 @@ module.exports = {
       var userName = req.body.userName
       var password = req.body.password;
       var userData = null;
-      sails.log.debug(userName, password)
       if (Utils.isNil(userName)) {
         sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
         return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
@@ -285,7 +284,6 @@ module.exports = {
           return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
         }
         var newPath = await Utils.moveImg(pictureUrl)
-        sails.log.debug(newPath)
       }
       data = {
         title: title,
@@ -578,7 +576,7 @@ module.exports = {
             excellentEmp: excellentEmp,
             difficultEmp: difficultEmp
           }).fetch()
-          sails.log.debug('res:', resData)
+          // sails.log.debug('res:', resData)
           return res.feedback(ResultCode.OK_TO_AMEND.code, {}, ResultCode.OK_TO_AMEND.msg)
         } catch (error) {
           sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
@@ -600,7 +598,7 @@ module.exports = {
   deleteEmp: async function(req, res) {
     try {
       var id = req.body.id
-      sails.log.debug(id)
+      // sails.log.debug(id)
       if (Utils.isNil(id)) {
         sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
         return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
@@ -611,7 +609,7 @@ module.exports = {
         sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
         return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
       }
-      sails.log.debug("resData", resData)
+      // sails.log.debug("resData", resData)
       return res.feedback(ResultCode.OK_TO_DELETE.code, {}, ResultCode.OK_TO_DELETE.msg)
     } catch (error) {
       sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
@@ -663,7 +661,7 @@ module.exports = {
    */
   deleteLawyer: async function(req, res) {
     try {
-      sails.log.debug(req.body)
+      // sails.log.debug(req.body)
       var id = req.body.id
       if (Utils.isNil(id)) {
         sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
