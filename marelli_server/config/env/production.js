@@ -222,8 +222,14 @@ module.exports = {
      ***************************************************************************/
     cookie: {
       // secure: true,
-      maxAge: 24 * 60 * 60, // 24 hours
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
     },
+
+    adapter: 'redis',
+    // host: 'localhost',
+    host: '172.17.0.2',
+    port: 6379,
+    db: 1,
 
   },
 

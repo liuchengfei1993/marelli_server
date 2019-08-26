@@ -18,8 +18,8 @@ WORKDIR /app
 COPY marelli_server /marelli_server
 COPY marelli_manage /app
 # 设置环境变量
-# ENV NODE_ENV development
+ENV NODE_ENV production
 # 用环境变量启动
-# CMD /bin/sh ./docker_start.sh $NODE_ENV
+CMD /bin/sh ./docker_start.sh $NODE_ENV
 RUN npm cache clean -f && npm install > /dev/null 2>&1
 CMD ["sails", "lift"]
