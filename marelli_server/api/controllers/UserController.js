@@ -473,6 +473,7 @@ module.exports = {
           return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
         }
       }
+      sails.log.debug(findResult)
       if (empStatus === CONST.EXCELLENTEMP) {
         try {
           findResult = await User.find({
@@ -517,7 +518,7 @@ module.exports = {
         sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
         return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
       }
-      var findResult = null
+      var findResult = []
       try {
         findResult = await Lawyer.find()
       } catch (error) {
@@ -527,12 +528,12 @@ module.exports = {
       if (Utils.isNil(findResult[0])) {
         return res.feedback(ResultCode.OK_TO_GET.code, findResult, ResultCode.OK_TO_GET.msg);
       }
-      res = findResult.slice((page - 1) * CONST.pagenation.skip, page * CONST.pagenation.limit);
-      var resData = {
-        findResult: res,
+      resData = findResult.slice((page - 1) * CONST.pagenation.skip, page * CONST.pagenation.limit);
+      var resDatas = {
+        findResult: resData,
         total: findResult.length
       }
-      return res.feedback(ResultCode.OK_TO_GET.code, resData, ResultCode.OK_TO_GET.msg);
+      return res.feedback(ResultCode.OK_TO_GET.code, resDatas, ResultCode.OK_TO_GET.msg);
     } catch (error) {
       sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
       return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);

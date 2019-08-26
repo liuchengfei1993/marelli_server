@@ -32,8 +32,8 @@ module.exports = {
   VERIFY_ERROR_TIMES: 5,
 
   UNION_INTRODUCTION: '工会介绍',
-  DIFFICULTEMP: 0, //困难员工
-  EXCELLENTEMP: 1, //优秀员工,
+  DIFFICULTEMP: '0', //困难员工
+  EXCELLENTEMP: '1', //优秀员工,
 
   //分页信息
   pagenation: {
