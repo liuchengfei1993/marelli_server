@@ -21,9 +21,42 @@ module.exports = {
       var IDCard = req.body.IDCard
       var gender = req.body.gender
       var phone = req.body.phone
-      var verifyCode = req.body.verifyCode; //验证码
+      // var verifyCode = req.body.verifyCode; //验证码
       // var verifyType = CONST.TIPS[0].type; //验证码类型
-      if (Utils.isNil(userName)) {
+      if (Utils.isNil(employeesID)) {
+        sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
+        return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
+      }
+      //Determine whether the user is registered
+      try {
+        var findResult = await User.find({
+          or: [
+            { 'employeesID': employeesID },
+          ]
+        })
+      } catch (err) {
+        sails.log.error(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_SYSTEM_DB.msg, err);
+        return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
+      }
+      if (!Utils.isNil(findResult)) {
+        sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_USER_EXISTS.msg);
+        return res.feedback(ResultCode.ERR_USER_EXISTS.code, {}, ResultCode.ERR_USER_EXISTS.msg);
+      }
+      //Determine whether the Emp is registered
+      try {
+        var ableRegiste = await Emp.find({
+          'employeesID': employeesID
+        })
+      } catch (err) {
+        sails.log.error(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_SYSTEM_DB.msg, err);
+        return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
+      }
+      if (Utils.isNil(ableRegiste)) {
+        sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_USER_ABLE.msg);
+        return res.feedback(ResultCode.ERR_USER_ABLE.code, {}, ResultCode.ERR_USER_ABLE.msg);
+      }
+      sails.log.debug(ableRegiste)
+      if (Utils.isNil(userName) || (userName !== ableRegiste.EmpName)) {
         sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
         return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
       }
@@ -31,23 +64,15 @@ module.exports = {
         sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
         return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
       }
-      // if (Utils.isNil(openId)) {
-      //   sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
-      //   return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
-      // }
-      if (Utils.isNil(employeesID)) {
+      if (Utils.isNil(department) || (department !== ableRegiste.department)) {
         sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
         return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
       }
-      if (Utils.isNil(department)) {
+      if (Utils.isNil(IDCard) || (IDCard !== ableRegiste.IDCard)) {
         sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
         return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
       }
-      if (Utils.isNil(IDCard)) {
-        sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
-        return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
-      }
-      if (Utils.isNil(gender)) {
+      if (Utils.isNil(gender) || (gender !== ableRegiste.gender)) {
         sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
         return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
       }
@@ -76,33 +101,12 @@ module.exports = {
         sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_INVALID_CODE.msg);
         return res.feedback(ResultCode.ERR_INVALID_CODE.code, {}, ResultCode.ERR_INVALID_CODE.msg);
       }
-
-      //Determine whether the user is registered
-      try {
-        var findResult = await User.find({
-          or: [
-            { 'employeesID': employeesID },
-            // { 'openId': openId }
-          ]
-        })
-      } catch (err) {
-        sails.log.error(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_SYSTEM_DB.msg, err);
-        return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
-      }
-      if (!Utils.isNil(findResult)) {
-        sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_USER_EXISTS.msg);
-        return res.feedback(ResultCode.ERR_USER_EXISTS.code, {}, ResultCode.ERR_USER_EXISTS.msg);
-      }
-
       var salt = Utils.getSalt()
       var password = Utils.secretHash(password, salt, password);
       var createData = null
-      // var number = Math.floor(Math.random() * nickName.name.length)
-      // var randomNickNames = nickName.name[number];
       try {
         createData = await User.create({
           userName: userName,
-          // openId: openId,
           password: password,
           salt: salt,
           employeesID: employeesID,
@@ -115,7 +119,6 @@ module.exports = {
         sails.log.error(new Date().toISOString(), __filename + ":" + __line, err);
       }
       req.session.user = createData
-      sails.log.debug(createData)
       delete createData.password
       delete createData.salt
       delete createData.createdAt

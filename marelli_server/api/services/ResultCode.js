@@ -24,6 +24,7 @@ module.exports = {
   ERR_USER_EXISTS: { code: '3001', msg: '该用户已存在' },
   ERR_USER_NOT_EXISTS: { code: '3002', msg: '账号不存在' },
   ERR_NOT_LOGIN: { code: '3003', msg: '请登陆后重试' },
+  ERR_USER_ABLE: { code: '3004', msg: '该用户尚未有注册资格' },
 
   OK_SET: { code: '0', msg: '设置成功' },
   ERR_SET: { code: '4001', msg: '设置失败' },

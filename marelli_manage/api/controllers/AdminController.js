@@ -54,6 +54,19 @@ module.exports = {
   },
 
   /**
+   * @description： 登出
+   * @param {*} req 
+   * @param {*} res 
+   */
+  logout: async function(req, res) {
+    req.session.user = null;
+    req.session.ip = null;
+    req.session.deviceType = null
+    req.session.destroy();
+    return res.feedback(ResultCode.OK_TO_LOGOUT.code, {}, ResultCode.OK_TO_LOGOUT.msg)
+  },
+
+  /**
    * @description 获取员工信息
    * @param {*} req 
    * @param {*} res 
@@ -69,7 +82,7 @@ module.exports = {
       var findResult = null
       if (type === CONST.DIFFICULTEMP) {
         try {
-          findResult = await User.find({
+          findResult = await Emp.find({
             difficultEmp: true
           })
         } catch (error) {
@@ -78,7 +91,7 @@ module.exports = {
         }
       } else if (type === CONST.EXCELLENTEMP) {
         try {
-          findResult = await User.find({
+          findResult = await Emp.find({
             excellentEmp: true
           })
         } catch (error) {
@@ -87,7 +100,7 @@ module.exports = {
         }
       } else {
         try {
-          findResult = await User.find()
+          findResult = await Emp.find({ sort: [{ 'id': 'DESC' }] })
         } catch (error) {
           sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
           return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
@@ -490,7 +503,7 @@ module.exports = {
       var gender = data.gender; // 性别
       var phone = data.phone; // 手机号
       var id = data.id; // id
-      var userName = data.userName //姓名
+      var EmpName = data.EmpName //姓名
       var difficultEmp = data.difficultEmp; //是否是困难员工
       var excellentEmp = data.excellentEmp; //是否是优秀员工
       // if (Utils.isNil(difficultEmp)) {
@@ -502,7 +515,7 @@ module.exports = {
       //   return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
       // }
       if (Utils.isNil(id)) {
-        if (Utils.isNil(userName)) {
+        if (Utils.isNil(EmpName)) {
           sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
           return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
         }
@@ -527,7 +540,7 @@ module.exports = {
           return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
         }
         try {
-          var findResult = await User.find({
+          var findResult = await Emp.find({
             or: [
               { 'employeesID': employeesID },
             ]
@@ -540,14 +553,9 @@ module.exports = {
           sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_USER_EXISTS.msg);
           return res.feedback(ResultCode.ERR_USER_EXISTS.code, {}, ResultCode.ERR_USER_EXISTS.msg);
         }
-        var salt = Utils.getSalt()
-        var password = IDCard.substring(12, 18)
-        password = Utils.secretHash(password, salt, password);
         try {
-          createData = await User.create({
-            userName: userName,
-            password: password,
-            salt: salt,
+          createData = await Emp.create({
+            EmpName: EmpName,
             employeesID: employeesID,
             department: department,
             IDCard: IDCard,
@@ -562,28 +570,23 @@ module.exports = {
           return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
         }
       } else {
-
         try {
-          var resData = await User.update({ id: id }).set({
-            userName: userName,
+          var resData = await Emp.update({ id: id }).set({
+            EmpName: EmpName,
             employeesID: employeesID,
             department: department,
             IDCard: IDCard,
             gender: gender,
             phone: phone,
-            // password: password,
-            // salt: salt,
             excellentEmp: excellentEmp,
             difficultEmp: difficultEmp
           }).fetch()
-          // sails.log.debug('res:', resData)
           return res.feedback(ResultCode.OK_TO_AMEND.code, {}, ResultCode.OK_TO_AMEND.msg)
         } catch (error) {
           sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
           return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
         }
       }
-
     } catch (err) {
       sails.log.error(new Date().toISOString(), __filename + ":" + __line, err);
       return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);
@@ -604,7 +607,7 @@ module.exports = {
         return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
       }
       try {
-        var resData = await User.destroy({ id: id }).fetch()
+        var resData = await Emp.destroy({ id: id }).fetch()
       } catch (error) {
         sails.log.error(new Date().toISOString(), __filename + ":" + __line, error);
         return res.feedback(ResultCode.ERR_SYSTEM_DB.code, {}, ResultCode.ERR_SYSTEM_DB.msg);

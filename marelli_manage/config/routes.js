@@ -31,6 +31,8 @@ module.exports.routes = {
   'get /marelli_manage/admin/getLawyerInfo/:userName': { controller: 'AdminController', action: 'getLawyerInfo' },
   'post /marelli_manage/admin/deleteLawyer/:userName': { controller: 'AdminController', action: 'deleteLawyer' },
   'post /marelli_manage/admin/updateLawyer/:userName': { controller: 'AdminController', action: 'updateLawyer' },
+  'post /marelli_manage/admin/logout/:userName': { controller: 'AdminController', action: 'logout' },
+
 
 
 
