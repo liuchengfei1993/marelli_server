@@ -442,45 +442,6 @@ module.exports = {
             return res.feedback(ResultCode.ERR_TYPE_OF_FILE.code, uploadedFiles[i].type, ResultCode.ERR_TYPE_OF_FILE.msg);
           }
         }
-        // if (req.session.image !== uploadedFiles[0].fd) {
-        //   sails.log.debug(req.session.image)
-        //   Utils.deleteFile(req.session.image)
-        // }
-        // req.session.image = uploadedFiles[0].fd
-        // req.session.imageTitle = title
-        // var newPath = Utils.moveImg(req.session.image);
-        // uploadedFiles[0].fd = newPath
-        // sails.log.debug('newPath:', JSON.stringify(newPath))
-        // if (Utils.isNil(req.session.upload)) {
-        //   req.session.upload = {
-        //     license: '',
-        //     handlePicture: '',
-        //     cardFront: '',
-        //     cardBack: '',
-        //     picture: '',
-        //     avatar: '',
-        //   }
-        // }
-        // switch (type) {
-        //   case 0: //营业执照
-        //     req.session.upload.license = uploadedFiles[0].fd
-        //     break
-        //   case 1: //负责人手持身份证照
-        //     req.session.upload.handlePicture = uploadedFiles[0].fd
-        //     break
-        //   case 2: //负责人身份证正面照
-        //     req.session.upload.cardFront = uploadedFiles[0].fd;
-        //     break
-        //   case 3: //负责人身份证反面照
-        //     req.session.upload.cardBack = uploadedFiles[0].fd;
-        //     break
-        //   case 4: //直兑点照片
-        //     req.session.upload.picture = uploadedFiles[0].fd;
-        //     break
-        //   case 5: //头像
-        //     req.session.upload.avatar = uploadedFiles[0].fd;
-        //     break
-        // }
         return res.feedback(ResultCode.OK_TO_UPLOAD.code, uploadedFiles, ResultCode.OK_TO_UPLOAD.msg)
       });
     } catch (err) {
