@@ -371,42 +371,6 @@ module.exports = {
    */
   uploadImage: function(req, res) {
     try {
-      // var title = req.param('title')
-      // var userName = req.param('userName')
-      // if (Utils.isNil(title)) {
-      //   sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
-      //   return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
-      // }
-      //判断type类型，写入session
-      // var type = req.param('type');
-      // if (Utils.isNil(type)) {
-      //   sails.log.debug(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_MISS_PARAMETERS.msg);
-      //   return res.feedback(ResultCode.ERR_MISS_PARAMETERS.code, {}, ResultCode.ERR_MISS_PARAMETERS.msg);
-      // }
-      // if (typeof(type) !== 'number') {
-      //   type = parseInt(type)
-      // }
-      // switch (type) {
-      //   case 0: //营业执照
-      //     var pictureType = 'license'
-      //     break
-      //   case 1: //负责人手持身份证照
-      //     var pictureType = 'handlePicture'
-      //     break
-      //   case 2: //负责人身份证正面照
-      //     var pictureType = 'cardFront'
-      //     break
-      //   case 3: //负责人身份证反面照
-      //     var pictureType = 'cardBack'
-      //     break
-      //   case 4: //直兑点照片
-      //     var pictureType = 'picture'
-      //     break
-      //   case 5: //头像
-      //     var pictureType = 'avatar'
-      //     break
-      // }
-      // var ext = '.png'
       var file = req.file('image').on('error', () => {
         // sails.log.error(new Date().toISOString(), __filename + ":" + __line, ResultCode.ERR_TO_UPLOAD.msg);
         // return res.feedback(ResultCode.ERR_TO_UPLOAD.code, {}, ResultCode.ERR_TO_UPLOAD.msg);
