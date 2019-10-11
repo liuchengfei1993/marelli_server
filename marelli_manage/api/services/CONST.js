@@ -58,6 +58,9 @@ module.exports = {
     COMPANY_PROFILE: 3 //公司简介
   },
 
+
+
+
   attachment: {
     attachment_max_byte: 1024 * 1024 * 100,
     attachment_path: '/upload'
