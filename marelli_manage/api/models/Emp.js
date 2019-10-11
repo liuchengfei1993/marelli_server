@@ -1,1 +1,1 @@
-/Users/liuchengfei/workspace/marelli_server/marelli_server/api/models/Emp.js
+../../../marelli_server/api/models/Emp.js
